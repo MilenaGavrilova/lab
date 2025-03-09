@@ -1,0 +1,91 @@
+using System;
+
+class Program
+{
+    static void Main()
+    {
+        Random rand = new Random();
+        int user = 0, comp = 0;
+        int level = 1;
+        bool cont = true;
+
+        while (cont && level <= 2)
+        {
+            int min, max, rounds, proc, life, scor;
+            if (level == 1)
+            {
+                min = 1; max = 10; rounds = 3;
+                proc = 50; life = 5; scor = 5;
+            }
+            else
+            {
+                min = 10; max = 100; rounds = 2;
+                proc = 25; life = 10; scor = 10;
+            }
+
+            Console.WriteLine($"*** РІВЕНЬ {level} ***");
+            for (int round = 1; round <= rounds; round++)
+            {
+                Console.WriteLine($"\nРаунд {round}");
+                int secretNumber = rand.Next(min, max + 1);
+                int lives = (max - min + 1) * proc / 100;
+                bool won = false;
+
+                while (lives > 0)
+                {
+                    Console.Write($"Вгадай число ({min}-{max}): ");
+                    int guess = int.Parse(Console.ReadLine());
+
+                    if (guess == secretNumber)
+                    {
+                        Console.WriteLine("Правильно!");
+                        user += lives * scor;
+                        won = true;
+                        break;
+                    }
+                    else
+                    {
+                        lives--;
+                        Console.WriteLine($"Неправильно! У тебе залишилось {lives} життів.");
+                        if (lives > 0)
+                        {
+                            Console.Write("Хочеш підказку? (1/0): ");
+                            string h = Console.ReadLine().ToLower();
+                            if (h == "1" && lives > 0)
+                            {
+                                lives--;
+                                if (guess < secretNumber)
+                                    Console.WriteLine("Загадане число більше.");
+                                else
+                                    Console.WriteLine("Загадане число менше.");
+                            }
+                        }
+                    }
+                }
+
+                if (!won)
+                {
+                    Console.WriteLine($"Ти програв! Загадане число було {secretNumber}.");
+                    comp += ((max - min + 1) * proc / 100) * life;
+                }
+
+                Console.WriteLine($"Очки: Ти - {user}, Комп'ютер - {comp}");
+            }
+
+            Console.WriteLine($"\nРівень {level} завершено! Твої очки: {user}");
+            if (level == 1 && user > comp)
+            {
+                Console.Write("Бажаєш продовжити на другий рівень? (так/ні): ");
+                cont = Console.ReadLine().ToLower() == "так";
+                if (cont) level++;
+            }
+            else break;
+        }
+
+        Console.WriteLine($"\nГра завершена! Твої остаточні очки: {user}");
+        if (user > comp)
+            Console.WriteLine("Ти переміг!");
+        else
+            Console.WriteLine("Програш.");
+    }
+}
