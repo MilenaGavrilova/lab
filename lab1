@@ -1,1 +1,42 @@
-jik
+using System;
+
+internal class Program
+{
+    static void Main()
+    {
+        double a, b, c;
+
+        Console.WriteLine("Ви хочете використати значення? (1/0)");
+        string choice = Console.ReadLine()?.Trim().ToLower();
+
+        if (choice == "1")
+        {
+            a = 10.5;
+            b = 0.154;
+            c = 5.3;
+        }
+        else
+        {
+            Console.Write("Enter a: ");
+            a = Convert.ToDouble(Console.ReadLine());
+
+            Console.Write("enter b: ");
+            b = Convert.ToDouble(Console.ReadLine());
+
+            Console.Write("Enter c: ");
+            c = Convert.ToDouble(Console.ReadLine());
+        }
+
+        double y = s (a, b, c);
+        Console.WriteLine($"y({a:F4}, {b:F4}, {c:F4}) = {y:F3}");
+        Console.ReadKey();
+    }
+
+    static double s (double a, double b, double c)
+    {
+        double numerator = Math.Pow((a + b) / Math.Exp(a * b), 4);
+        double denominator = Math.Sin(1.0 / (a * b)) + Math.Pow(a, 3) * b * (5.0 / 7);
+        return (numerator / denominator) * c;
+    }
+}
+
