@@ -1,1 +1,42 @@
+using System;
+
+class Program
+{
+    static void Main()
+    {
+        double[] xi = { 1.57, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0 };
+        double[] yi = new double[xi.Length];
+
+        for (int i = 0; i < xi.Length; i++)
+        {
+            if (xi[i] == 1)
+            {
+                yi[i] = double.NaN;
+            }
+            else
+            {
+                yi[i] = Math.Sin(2 * xi[i]) / (xi[i] - 1);
+            }
+        }
+
+        string filePath = "LAB2.RES";
+        using (StreamWriter writer = new StreamWriter(filePath))
+        {
+            writer.WriteLine("Таблиця значень");
+            writer.WriteLine("I--------------------------------I");
+            writer.WriteLine("I      X      I    Функція    I");
+            writer.WriteLine("I--------------------------------I");
+
+            for (int i = 0; i < xi.Length; i++)
+            {
+                writer.WriteLine($"I X={xi[i],-7:F3} I Y={yi[i],-7:F3} I");
+            }
+
+            writer.WriteLine("I--------------------------------I");
+            writer.WriteLine("Таблицю сформуваa <Г. М. Андріївна>");
+        }
+
+        Console.WriteLine("Результати збережено у файлі LAB2.RES");
+    }
+}
 
