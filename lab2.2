@@ -1,0 +1,29 @@
+using System;
+
+class Program
+{
+    static void Main()
+    {
+        double x, s, S, y;
+        double epsilon = 1e-6;
+        double[] xx = { -1, 1, 1.9 };
+
+        for (int i = 0; i < xx.Length; i++)
+        {
+            x = xx[i];
+            S = 0;
+            int n = 1;
+
+            do
+            {
+                s = Math.Pow(x, n) / Math.Pow(2, n);
+                S += s;
+                n++;
+            } while (Math.Abs(s) >= epsilon);
+
+            y = x / (2 - x);
+
+            Console.WriteLine($"x = {x}, S(x) = {S:F6}, y(x) = {y:F6}");
+        }
+    }
+}
