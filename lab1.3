@@ -1,1 +1,46 @@
-dd
+using System;
+
+class Program
+{
+    static void Main()
+    {
+        int k = 0;
+
+        Console.WriteLine("Пройдіть тест 'Перевір свої можливості'! Відповідайте числами.");
+
+        Console.Write("1. Професор ліг спати о 8 годині, а встав о 9 годині. Скільки годин проспав професор? ");
+        if (Convert.ToInt32(Console.ReadLine()) == 1) k++;
+
+        Console.Write("2. На двох руках десять пальців. Скільки пальців на 10 руках? ");
+        if (Convert.ToInt32(Console.ReadLine()) == 50) k++;
+
+        Console.Write("3. Скільки цифр у дюжині? ");
+        if (Convert.ToInt32(Console.ReadLine()) == 2) k++;
+
+        Console.Write("4. Скільки потрібно зробити розпилів, щоб розпиляти колоду на 12 частин? ");
+        if (Convert.ToInt32(Console.ReadLine()) == 11) k++;
+
+        Console.Write("5. Лікар зробив три уколи в інтервалі 30 хвилин. Скільки часу він витратив? ");
+        if (Convert.ToInt32(Console.ReadLine()) == 30) k++;
+
+        Console.Write("6. Скільки цифр 9 в інтервалі [1-100]? ");
+        if (Convert.ToInt32(Console.ReadLine()) == 1) k++;
+
+        Console.Write("7. Пастух мав 30 овець. Усі, окрім однієї, розбіглися. Скільки овець лишилося? ");
+        if (Convert.ToInt32(Console.ReadLine()) == 1) k++;
+
+
+        Console.Write("\nВаш результат: ");
+        if (k == 7)
+            Console.WriteLine("Геній!");
+        else if (k == 6)
+            Console.WriteLine("Ерудит!");
+        else if (k == 5)
+            Console.WriteLine("Нормальний!");
+        else if (k == 4)
+            Console.WriteLine("Здібності середні.");
+        else if (k == 3)
+            Console.WriteLine("Здібності нижче середнього.");
+        else
+            Console.WriteLine("Вам треба відпочити!"); 
+   
