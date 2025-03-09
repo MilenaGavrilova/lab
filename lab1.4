@@ -1,0 +1,58 @@
+
+
+class Program
+{
+    static void Main()
+    {
+        string[] input = File.ReadAllLines("input.txt");
+
+
+        int size = Convert.ToInt32(input[0]);  // Ємність 
+        int AB = Convert.ToInt32(input[1]);    //  А до В
+        int BC = Convert.ToInt32(input[2]);    //  В до С
+        int wi = Convert.ToInt32(input[3]);   // Вага 
+
+        int size1 = 0;  //  на 1 км
+
+        //  витрати пального залежно від ваги
+        if (wi <= 500)
+            size1 = 1;
+        else if (wi <= 1000)
+            size1 = 4;
+        else if (wi <= 1500)
+            size1 = 7;
+        else if (wi <= 2000)
+            size1 = 9;
+        else
+        {
+            Console.WriteLine("Літак не може підняти вантаж такої маси.");
+            return;
+        }
+
+        // Обчислення необхідного пального
+        int dAB = AB * size1;
+        int dBC = BC * size1;
+
+        // Перевірка 
+        if (dAB > size)
+        {
+            Console.WriteLine("Літак не може долетіти з A до B.");
+            return;
+        }
+
+        // Паливо що залишиться після прольоту АВ
+        int ends = size - dAB;
+
+        // Паливо яке треба дозаправити в пункті В
+        int needs = Math.Max(0, dBC - ends);
+
+        //  чи можна подолати шлях В С
+        if (dBC > size)
+        {
+            Console.WriteLine("Літак не може долетіти з B до C.");
+            return;
+        }
+
+        // Вивід 
+        Console.WriteLine("Мінімальна кількість палива для дозаправки в В: " + needs);
+    
