@@ -1,0 +1,109 @@
+using System;
+
+class Program
+{
+    static void Main()
+    {
+        int N;
+        int[] array;
+
+        Console.WriteLine("Виберіть спосіб введення масиву:");
+        Console.WriteLine("1 - З клавіатури");
+        Console.WriteLine("2 - З файлу");
+        Console.WriteLine("3 - Випадкові числа");
+        Console.Write("Ваш вибір: ");
+        int choice = int.Parse(Console.ReadLine());
+
+        if (choice == 1)
+        {
+            Console.Write("Введіть розмір масиву N: ");
+            N = int.Parse(Console.ReadLine());
+            array = new int[N];
+
+            for (int i = 0; i < N; i++)
+            {
+                Console.Write($"array[{i}] = ");
+                array[i] = int.Parse(Console.ReadLine());
+            }
+        }
+        else if (choice == 2)
+        {
+            Console.Write("Введіть ім'я файлу: ");
+            string fil = Console.ReadLine();
+
+            if (File.Exists(fil))
+            {
+                string[] lines = File.ReadAllLines(fil);
+                N = lines.Length;
+                array = new int[N];
+                for (int i = 0; i < N; i++)
+                {
+                    array[i] = int.Parse(lines[i]);
+                }
+            }
+            else
+            {
+                Console.WriteLine("Файл не знайдено.");
+                return;
+            }
+        }
+        else if (choice == 3)
+        {
+            Console.Write("Введіть розмір масиву N: ");
+            N = int.Parse(Console.ReadLine());
+            array = new int[N];
+            Random rand = new Random();
+
+            for (int i = 0; i < N; i++)
+            {
+                array[i] = rand.Next(-10, 11); 
+                Console.WriteLine($"array[{i}] = {array[i]}");
+            }
+        }
+        else
+        {
+            Console.WriteLine("Невірно");
+            return;
+        }
+
+        
+        int first = -1;
+        for (int i = 0; i < array.Length; i++)
+        {
+            if (array[i] > 0)
+            {
+                first = i;
+                break;
+            }
+        }
+
+        
+        int last = -1;
+        for (int i = array.Length - 1; i >= 0; i--)
+        {
+            if (array[i] > 0)
+            {
+                last = i;
+                break;
+            }
+        }
+
+        
+        if (first != -1 && last != -1 && first != last)
+        {
+            int temp = array[first];
+            array[first] = array[last];
+            array[last] = temp;
+
+            Console.WriteLine("Масив після обміну:");
+            for (int i = 0; i < array.Length; i++)
+            {
+                Console.WriteLine($"array[{i}] = {array[i]}");
+            }
+        }
+        else
+        {
+            Console.WriteLine("не вистачає додатних елементів.");
+        }
+    }
+}
