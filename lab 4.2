@@ -1,0 +1,71 @@
+using System;
+
+
+class Program
+{
+    static void Main()
+    {
+        string[] array;
+
+        Console.WriteLine("Виберіть спосіб введення даних:");
+        Console.WriteLine("1 - З клавіатури");
+        Console.WriteLine("2 - З файлу");
+        Console.Write("Ваш вибір: ");
+        int ch = int.Parse(Console.ReadLine());
+
+        if (ch == 1)
+        {
+            Console.Write("Скільки рядків у масиві?: ");
+            int n = int.Parse(Console.ReadLine());
+            array = new string[n];
+            for (int i = 0; i < n; i++)
+            {
+                Console.Write($"Рядок {i + 1}: ");
+                array[i] = Console.ReadLine();
+            }
+        }
+        else if (ch == 2)
+        {
+            Console.Write("Введіть ім'я файлу: ");
+            string fil = Console.ReadLine();
+            if (File.Exists(fil))
+            {
+                array = File.ReadAllLines(fil);
+            }
+            else
+            {
+                Console.WriteLine("Файл не знайдено.");
+                return;
+            }
+        }
+        else
+        {
+            Console.WriteLine("Невірний вибір.");
+            return;
+        }
+
+       
+        for (int i = 0; i < array.Length - 1; i++)
+        {
+            for (int j = i + 1; j < array.Length; j++)
+            {
+                if (array[i][0] < array[j][0])
+                {
+                    string t = array[i];
+                    array[i] = array[j];
+                    array[j] = t;
+                }
+            }
+        }
+
+        Console.WriteLine("Відсортований масив:");
+        foreach (string s in array)
+        {
+            Console.WriteLine(s);
+        }
+
+        string outputFile = "sorted_output.txt";
+        File.WriteAllLines(outputFile, array);
+        Console.WriteLine($"Результат записано у файл: {outputFile}");
+    }
+}
