@@ -1,0 +1,134 @@
+using System;
+using System.IO;
+
+class Program
+{
+    static void Main()
+    {
+        int m, n;
+        bool[] A;
+        double[] X;
+
+        
+        Console.WriteLine("Виберіть спосіб введення даних:");
+        Console.WriteLine("1 - З клавіатури");
+        Console.WriteLine("2 - З файлу");
+        Console.WriteLine("3 - Випадкові значення");
+        Console.Write("Ваш вибір: ");
+        int ch = int.Parse(Console.ReadLine());
+
+        if (ch == 1)
+        {
+            Console.Write("Введіть розмір логічного вектора m: ");
+            m = int.Parse(Console.ReadLine());
+            A = new bool[m];
+            for (int i = 0; i < m; i++)
+            {
+                Console.Write($"A[{i}] (1 або 0): ");
+                int input = int.Parse(Console.ReadLine());
+                A[i] = (input == 1);
+            }
+
+            Console.Write("Введіть розмір дійсного вектора n: ");
+            n = int.Parse(Console.ReadLine());
+            X = new double[n];
+            for (int i = 0; i < n; i++)
+            {
+                Console.Write($"X[{i}] = ");
+                X[i] = double.Parse(Console.ReadLine());
+            }
+        }
+        else if (ch == 2)
+        {
+            Console.Write("Введіть ім'я файлу: ");
+            string fil = Console.ReadLine();
+            if (File.Exists(fil))
+            {
+                string[] lines = File.ReadAllLines(fil);
+                string[] aValues = lines[0].Split(' ');
+                m = aValues.Length;
+                A = new bool[m];
+                for (int i = 0; i < m; i++)
+                {
+                    A[i] = (int.Parse(aValues[i]) == 1);
+                }
+
+                string[] xV = lines[1].Split(' ');
+                n = xV.Length;
+                X = new double[n];
+                for (int i = 0; i < n; i++)
+                {
+                    X[i] = double.Parse(xV[i]);
+                }
+            }
+            else
+            {
+                Console.WriteLine("Файл не знайдено.");
+                return;
+            }
+        }
+        else if (ch == 3)
+        {
+            Random rand = new Random();
+
+            m = rand.Next(5, 11); 
+            A = new bool[m];
+            Console.WriteLine("A:");
+            for (int i = 0; i < m; i++)
+            {
+                A[i] = rand.Next(0, 2) == 1;
+                Console.Write(A[i] ? "1 " : "0 ");
+            }
+            Console.WriteLine();
+
+            n = rand.Next(5, 11); 
+            X = new double[n];
+            Console.WriteLine("X:");
+            for (int i = 0; i < n; i++)
+            {
+                X[i] = Math.Round(rand.NextDouble() * 20 - 10, 2); 
+                Console.Write(X[i] + " ");
+            }
+            Console.WriteLine();
+        }
+        else
+        {
+            Console.WriteLine("Невірний вибір.");
+            return;
+        }
+
+        
+        int minL = Math.Min(m, n);
+        for (int i = 0; i < minL; i++)
+        {
+            if (A[i])
+                X[i] *= 0.7;
+            else
+                X[i] /= -10.0 / 7.0;
+        }
+
+        
+        double maxP = double.MinValue;
+        double minN = double.MaxValue;
+        for (int i = 0; i < n; i++)
+        {
+            if (X[i] > 0 && X[i] > maxP)
+                maxP = X[i];
+            if (X[i] < 0 && X[i] < minN)
+                minN = X[i];
+        }
+
+        
+        double summ = maxP + minN;
+        for (int i = 0; i < n; i++)
+        {
+            X[i] += summ;
+        }
+
+        Console.WriteLine("Перетворений X:");
+        for (int i = 0; i < n; i++)
+        {
+            Console.Write(X[i].ToString("F2") + " ");
+        }
+        Console.WriteLine();
+    }
