@@ -131,4 +131,97 @@ class Program
             Console.Write(X[i].ToString("F2") + " ");
         }
         Console.WriteLine();
+           Console.
+        WriteLine("Оберіть тип масиву:");
+        Console.WriteLine("1 - Прямокутний масив");
+        Console.WriteLine("2 - Ступінчатий масив");
+        int arrayT = int.Parse(Console.ReadLine());
+
+        Random randA = new Random();
+        int row = randA.Next(3, 8); 
+
+        if (arrayT == 1)
+        {
+            int cols = randA.Next(5, 11);
+            double[,] rectA = new double[row, cols];
+            Console.WriteLine("Прямокутний масив:");
+
+            for (int i = 0; i < row; i++)
+            {
+                for (int j = 0; j < cols; j++)
+                {
+                    rectA[i, j] = Math.Round(randA.NextDouble() * 20 - 10, 2);
+                }
+
+                
+                if (i % 2 == 0)
+                {
+                   
+                    for (int k = 1; k < cols; k++)
+                    {
+                        double t = rectA[i, k];
+                        int l = k - 1;
+                        while (l >= 0 && rectA[i, l] > t)
+                        {
+                            rectA[i, l + 1] = rectA[i, l];
+                            l--;
+                        }
+                        rectA[i, l + 1] = t;
+                    }
+                }
+            }
+
+            for (int i = 0; i < row; i++)
+            {
+                for (int j = 0; j < cols; j++)
+                {
+                    Console.Write(rectA[i, j].ToString("F2") + "\t");
+                }
+                Console.WriteLine();
+            }
+        }
+        else if (arrayT == 2)
+        {
+            double[][] jArr = new double[row][];
+            Console.WriteLine("Ступінчатий масив:");
+            for (int i = 0; i < row; i++)
+            {
+                int len = randA.Next(5, 11); 
+                jArr[i] = new double[len];
+                for (int j = 0; j < len; j++)
+                {
+                    jArr[i][j] = Math.Round(randA.NextDouble() * 20 - 10, 2);
+                }
+
+                if (i % 2 == 0)
+                {
+                    // Сортування вставками
+                    for (int k = 1; k < len; k++)
+                    {
+                        double t = jArr[i][k];
+                        int l = k - 1;
+                        while (l >= 0 && jArr[i][l] > t)
+                        {
+                            jArr[i][l + 1] = jArr[i][l];
+                            l--;
+                        }
+                        jArr[i][l + 1] = t;
+                    }
+                }
+            }
+            for (int i = 0; i < row; i++)
+            {
+                for (int j = 0; j < jArr[i].Length; j++)
+                {
+                    Console.Write(jArr[i][j].ToString("F2") + "\t");
+                }
+                Console.WriteLine();
+            }
+        }
+        else
+        {
+            Console.WriteLine("Невірний тип масиву.");
+        }
     }
+}
+    
