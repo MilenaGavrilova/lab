@@ -1,0 +1,22 @@
+using System;
+using System.Text.RegularExpressions;
+
+class Program
+{
+    static void Main()
+    {
+        Console.Write("Введіть рядок: ");
+        string inp = Console.ReadLine();
+
+        string p = "^abcdefghijklmnopqrstuv18340$";
+
+        if (Regex.IsMatch(inp, p))
+        {
+            Console.WriteLine("ПРАВИЛЬНИЙ.");
+        }
+        else
+        {
+            Console.WriteLine("НЕВІРНИЙ.");
+        }
+    }
+}
