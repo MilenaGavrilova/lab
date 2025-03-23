@@ -1,0 +1,22 @@
+using System;
+using System.Text.RegularExpressions;
+
+class Program
+{
+    static void Main()
+    {
+        Console.Write("Введіть пароль для перевірки: ");
+        string password = Console.ReadLine();
+
+        string p=  @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d_]{8,}$";
+
+        if (Regex.IsMatch(password, p))
+        {
+            Console.WriteLine("Пароль надійний.");
+        }
+        else
+        {
+            Console.WriteLine("Пароль не надійний.");
+        }
+    }
+}
