@@ -1,0 +1,173 @@
+using System;
+
+class Person
+{
+    private string firstName;
+    private string lastName;
+    private DateTime birthDate;
+
+    public Person(string firstName, string lastName, DateTime birthDate)
+    {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.birthDate = birthDate;
+    }
+
+    public Person() : this("John", "Doe", new DateTime(2000, 1, 1)) { }
+
+    public string FirstName
+    {
+        get => firstName;
+        set => firstName = value;
+    }
+
+    public string LastName
+    {
+        get => lastName;
+        set => lastName = value;
+    }
+
+    public DateTime BirthDate
+    {
+        get => birthDate;
+        set => birthDate = value;
+    }
+
+    public int BirthYear
+    {
+        get => birthDate.Year;
+        set => birthDate = new DateTime(value, birthDate.Month, birthDate.Day);
+    }
+
+    public override string ToString() => $"{FirstName} {LastName}, {BirthDate.ToShortDateString()}";
+
+    public string ToShortString() => $"{FirstName} {LastName}";
+}
+enum KindOf
+{
+    SystemPrograms,
+    UserPrograms,
+    Documents
+}
+class File
+{
+    public string FileName { get; set; }
+    public string User { get; set; }
+    public DateTime LastModified { get; set; }
+
+    public File(string fileName, string user, DateTime lastModified)
+    {
+        FileName = fileName;
+        User = user;
+        LastModified = lastModified;
+    }
+
+    public File() : this("Untitled.txt", "Unknown", DateTime.Now) { }
+
+    public override string ToString() => $"{FileName}, {User}, {LastModified}";
+}
+class Catalog
+{
+    private string name;
+    private string description;
+    private int size;
+    private KindOf kind;
+    private File[] files;
+
+    public Catalog(string name, string description, int size, KindOf kind, File[] files)
+    {
+        this.name = name;
+        this.description = description;
+        this.size = size;
+        this.kind = kind;
+        this.files = files ?? new File[0];
+    }
+
+    public Catalog() : this("New Catalog", "No description", 0, KindOf.Documents, new File[0]) { }
+
+    public string Name
+    {
+        get => name;
+        set => name = value ?? throw new ArgumentNullException(nameof(value));
+    }
+
+    public string Description
+    {
+        get => description;
+        set => description = value ?? throw new ArgumentNullException(nameof(value));
+    }
+
+    public int Size
+    {
+        get => size;
+        set
+        {
+            if (value < 0) throw new ArgumentOutOfRangeException(nameof(value), "Size not  negative.");
+            size = value;
+        }
+    }
+
+    public KindOf FileKind
+    {
+        get => kind;
+        set => kind = value;
+    }
+
+    public File[] Files
+    {
+        get => files;
+        private set => files = value ?? new File[0];
+    }
+
+    public File LatestFile => files.Length > 0 ? files.OrderByDescending(f => f.LastModified).FirstOrDefault() : null;
+
+    public bool this[KindOf kind] => this.kind == kind;
+
+    public void AddFiles(params File[] newFiles)
+    {
+        files = files.Concat(newFiles).ToArray();
+    }
+
+    public override string ToString() =>
+        $"Catalog: {Name}, {Description}, Size: {Size}MB, Type: {FileKind}, Files: {files.Length}";
+
+    public string ToShortString() =>
+        $"Catalog: {Name}, {Description}, Latest File: {(LatestFile != null ? LatestFile.FileName : "No files")}";
+}
+
+
+class Program
+{
+    static void Main()
+    {
+        Catalog catalog = new Catalog("Projects", "Development files", 150, KindOf.SystemPrograms, new File[0]);
+        Console.WriteLine("Short Info: " + catalog.ToShortString());
+
+        Console.WriteLine($"SystemPrograms: {catalog[KindOf.SystemPrograms]}"); //indexator
+        Console.WriteLine($"UserPrograms: {catalog[KindOf.UserPrograms]}");
+        Console.WriteLine($"Documents: {catalog[KindOf.Documents]}");
+
+        catalog.Name = "My Catalog";
+        catalog.Description = "Collection of files";
+        catalog.Size = 500;
+        catalog.FileKind = KindOf.Documents;
+
+        Console.WriteLine("Full Info: " + catalog.ToString());
+        File file1 = new File("Report.docx", "Alice", new DateTime(2024, 3, 15));
+        File file2 = new File("Presentation.pptx", "Bob", new DateTime(2024, 3, 20));
+        catalog.AddFiles(file1, file2);
+
+        Console.WriteLine("Updated Catalog: " + catalog.ToString());
+
+        Catalog[] disk = {
+            new Catalog("Work", "Office files", 300, KindOf.UserPrograms, new File[] { file1, file2 }),
+            new Catalog("Personal", "Photos and videos", 200, KindOf.Documents, new File[0]),
+            new Catalog("System", "System files", 400, KindOf.SystemPrograms, new File[] { new File("config.sys", "Admin", DateTime.Now) })
+        };
+        Console.WriteLine("\nCatalogs with at least 2 files:");
+        foreach (var cat in disk.Where(c => c.Files.Length >= 2))
+        {
+            Console.WriteLine(cat.ToShortString());
+        }
+    }
+}
