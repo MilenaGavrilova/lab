@@ -1,0 +1,59 @@
+using System;
+
+abstract class Train
+{
+    public string DestinationStation { get; set; }
+    public DateTime DepartureTime { get; set; }
+    public DateTime ArrivalTime { get; set; }
+    public int StopCount { get; set; }
+
+    public Train(string destinationStation, DateTime departureTime, DateTime arrivalTime, int stopCount)
+    {
+        DestinationStation = destinationStation;
+        DepartureTime = departureTime;
+        ArrivalTime = arrivalTime;
+        StopCount = stopCount;
+    }
+
+    // підрахунoк середнього інтервалу між зупинками
+    public abstract double CalculateAverageInterval();
+
+    public override string ToString()
+    {
+        return $"Train to {DestinationStation}\nDeparture: {DepartureTime}\nArrival: {ArrivalTime}\nStops: {StopCount}";
+    }
+}
+
+class Express : Train
+{
+    public string TrainName { get; set; }
+    public double MaxSpeed { get; set; }
+
+    public Express(string destinationStation, DateTime departureTime, DateTime arrivalTime, int stopCount, string trainName, double maxSpeed)
+        : base(destinationStation, departureTime, arrivalTime, stopCount)
+    {
+        TrainName = trainName;
+        MaxSpeed = maxSpeed;
+    }
+
+    public override double CalculateAverageInterval()
+    {
+        double totalTravelTime = (ArrivalTime - DepartureTime).TotalMinutes;  
+        return totalTravelTime / StopCount;  // середній інтервал між зупинками
+    }
+
+    public override string ToString()
+    {
+        return base.ToString() + $"\nExpress Name: {TrainName}\nMax Speed: {MaxSpeed} km/h";
+    }
+}
+
+class Program
+{
+    static void Main(string[] args)
+    {
+         Express expressTrain = new Express("Kyiv", new DateTime(2025, 4, 7, 9, 0, 0), new DateTime(2025, 4, 7, 13, 0, 0), 4, "Express 1", 150);
+        Console.WriteLine(expressTrain);
+        Console.WriteLine($"Виведення середнього інтервалу між зупинками: {expressTrain.CalculateAverageInterval()} minutes");
+    }
+}
