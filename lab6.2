@@ -1,0 +1,25 @@
+using System;
+abstract class Organization
+{
+  public string Name {get;set}
+  public string Rozdil {get;set}
+  public int Count {get;set}
+}
+public Organization(string Name, string Rozdil, int Count)
+{
+if (Count < 0)
+{
+  Console.WriteLine("Count не може бути від'ємним!")
+  Count = 0;
+
+  Name = name;
+  Rozdil = rozdil;
+  Count = count;
+}
+class StrahovaCompany : Organization
+{
+public StrahovaCompany( string Name, string Rozdil, int Count) : base(name, rozdil, count){}
+public abstract string Inf();
+public override string Inf()
+{
+  return $" [StrahovaCompany]
