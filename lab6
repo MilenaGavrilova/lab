@@ -18,13 +18,13 @@ abstract class Train
     // підрахунoк середнього інтервалу між зупинками
     public abstract double CalculateAverageInterval();
 
-    public override string ToString()
+    public override string ToString() //override для перевизначення
     {
-        return $"Train to {DestinationStation}\nDeparture: {DepartureTime}\nArrival: {ArrivalTime}\nStops: {StopCount}";
+        return $"Train to {DestinationStation}\nDeparture: {DepartureTime}\nArrival: {ArrivalTime}\nStops: {StopCount}"; //поверення рядка зі змінами
     }
 }
 
-class Express : Train
+class Express : Train //наслідує траїн
 {
     public string TrainName { get; set; }
     public double MaxSpeed { get; set; }
@@ -38,7 +38,7 @@ class Express : Train
 
     public override double CalculateAverageInterval()
     {
-        double totalTravelTime = (ArrivalTime - DepartureTime).TotalMinutes;  
+        double totalTravelTime = (ArrivalTime - DepartureTime).TotalMinutes;    //реалізація колкулате
         return totalTravelTime / StopCount;  // середній інтервал між зупинками
     }
 
