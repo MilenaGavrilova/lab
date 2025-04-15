@@ -1,49 +1,77 @@
 using System;
+using System.Linq;
 
-class Person
+namespace CatalogApp
+{ 
+    public enum KindOf
+{   SystemPrograms,
+    UserPrograms,
+    Documents
+} 
+    public class File
 {
-    private string firstName;
-    private string lastName;
-    private DateTime birthDate;
+    public string FileName{get;set};
+    public string User{get;set};
+    public DateTime LastModified {get;set};
 
-    public Person(string firstName, string lastName, DateTime birthDate)
+    public File(string fileName, string user, DateTime lastModified)
     {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.birthDate = birthDate;
+        FileName = fileName;
+        User = user;
+        LastModified = lastModified;
     }
 
-    public Person() : this("John", "Doe", new DateTime(2000, 1, 1)) { }
-
-    public string FirstName
-    {
-        get => firstName;
-        set => firstName = value;
-    }
-
-    public string LastName
-    {
-        get => lastName;
-        set => lastName = value;
-    }
-
-    public DateTime BirthDate
-    {
-        get => birthDate;
-        set => birthDate = value;
-    }
-
-    public int BirthYear
-    {
-        get => birthDate.Year;
-        set => birthDate = new DateTime(value, birthDate.Month, birthDate.Day);
-    }
-
-    public override string ToString() => $"{FirstName} {LastName}, {BirthDate.ToShortDateString()}";
-
-    public string ToShortString() => $"{FirstName} {LastName}";
+    public File() {
+        FileName = 'Unknown';
+        User = "Unknown";
+        LastModified = DataTime.Now;
 }
-enum KindOf
+
+    public  override string ToSring()
+    {
+       return$"FileName:{FileName},
+User:{User},LastModified:{LastModified}";
+    }
+}
+    public string Catalog
+{
+    private string name;
+    private string description;
+    privete string int size;
+    private KindOf kind;
+    private File files;
+}    
+    public Catalog(string name, string description, int size, KindOf kind, File file)
+    {
+        Name=name;
+        Description = description;
+        Size = size;
+        Kind = kind;
+        this.files = files ?? new File[0];
+    }
+
+    public Catalog()
+    {
+        name = "Dafault";
+        description = "no Description";
+        size = 0;
+        kind = KindOf.Documents;
+        files = new File[0];
+    }
+
+    public override string Tostring()
+    {
+        string filesStr = string.Join("\n",files.Select(f => f.ToString()));
+retirn$"Name:{name},Description:{description},Size:{size},Kind:{kind}\nFiles:\n{filesStr}";
+    }
+
+    
+
+    public string ToShortString() 
+}
+var latestFile = LatestFile;
+string latestFileName = latestFile != null ? latestFile.FileName: "None";
+return$"Name:{name},Description:{deccription
 {
     SystemPrograms,
     UserPrograms,
