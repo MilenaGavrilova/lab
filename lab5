@@ -19,9 +19,6 @@ namespace CatalogApp
         // Конструктор без параметрів
         public Person()
         {
-            name = "John";
-            surname = "Doe";
-            birthDate = new DateTime(2000, 1, 1);
         }
 
         // Властивості
@@ -191,7 +188,7 @@ namespace CatalogApp
             get
             {
                 if (files.Length == 0) return null;
-                return files.OrderByDescending(f => f.LastModified).FirstOrDefault();
+                return files.OrderByDescending(f => f.LastModified).First();
             }
         }
 
@@ -238,7 +235,6 @@ WriteLine($"Documents: {catalog[KindOf.Documents]}");
             Console.WriteLine("\nCatalog after adding files:");
             Console.WriteLine(catalog.ToString());
 
-            // Створюємо умовний диск з кількох каталогів
             var disk = new Catalog[]
             {
                 catalog,
