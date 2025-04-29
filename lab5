@@ -60,9 +60,6 @@ namespace CatalogApp
         }
     }
 }
-Person person = new Person("Alice", "Smith", new DateTime(1999, 5, 21));
-Console.WriteLine("Full info: " + person.ToString());
-Console.WriteLine("Short info: " + person.ToShortString());
 
 using System;
 using System.Linq;
