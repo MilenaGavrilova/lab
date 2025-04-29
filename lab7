@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace CatalogApp
+namespace Catalog
 {
-    public class Person : IComparable<Person>, ICloneable
+    public class Person : IComparable<Person>, ICloneable //два інтерфейси
     {
         public string Name { get; set; }
         public string Surname { get; set; }
@@ -19,258 +19,90 @@ namespace CatalogApp
             BirthDate = birthDate;
         }
 
-        public int CompareTo(Person other)
+        public int Comp(Person other)
         {
-            if (other == null) return 1;
+            if (other == null) return 1; // порівняння name і datebirh
             
-            int surnameComparison = Surname.CompareTo(other.Surname);
+                int surnameComparison = Surname.Comp(other.Surname);
             if (surnameComparison != 0) return surnameComparison;
-            int nameComparison = Name.CompareTo(other.Name);
+            int nameComparison = Name.Comp(other.Name);
             if (nameComparison != 0) return nameComparison;
-            return BirthDate.CompareTo(other.BirthDate);
+            return BirthDate.Comp(other.BirthDate);
         }
 
-        public object Clone()
+        public object Clone() //метод icloneable копіює обєкт Person
         {
             return new Person(this.Name, this.Surname, this.BirthDate);
         }
 
-        public override string ToString() => $"Name: {Name}, Surname: {Surname}, BirthDate: {BirthDate.ToShortDateString()}";
+        public override string ToString() => $"Name: {Name}, Surname: {Surname}, BirthDate: {BirthDate.ToShortDateString()}"; // перевизначення повертає ряд person
     }
 
-    public enum KindOf { SystemPrograms, UserPrograms, Documents }
+    public enum Kind { SystemPrograms, UserPrograms, Documents } // перерахування 
 
     public class File
     {
-        public string FileName { get; set; }
+        public string FName { get; set; }
         public string User { get; set; }
-        public DateTime LastModified { get; set; }
+        public DateTime Timelast { get; set; } //зміна файлу(час)
 
-        public File(string fileName, string user, DateTime lastModified)
+        public File(string fname, string user, DateTime timelast)
         {
-            FileName = fileName;
+            FName = fname;
             User = user;
-            LastModified = lastModified;
+            Timelast = timelast;
         }
 
-        public override string ToString() => $"FileName: {FileName}, User: {User}, LastModified: {LastModified}";
+        public override string ToString() => $"FName: {FName}, User: {User}, Timelast: {Timelast}";
     }
 
-    public class Catalog : IContainer<File>, FileContainer
+    public class Catalog : IContainer<File>, Filecontr // filecont розширює  icontainer
     {
         private string name;
-        private string description;
+        private string opus; \\ опис класу
         private int size;
-        private KindOf kind;
-        private List<File> fileList;
-        private bool isSaved = false;
+        privet Kind;\\ тип каталогу
+        private List<File> fileList; \\ список 
+        private bool save = false; \\ чи було збережено
 
-        public Catalog(string name, string description, int size, KindOf kind)
+        public Catalog(string name, string opus, int size, Kind kind)
         {
             this.name = name;
-            this.description = description;
+            this.opus = opus;
             this.size = size;
             this.kind = kind;
-            this.fileList = new List<File>();
+            this.fileList = new List<File>(); \\ порожній список для зберігання обєктів
         }
-
-        public int Count => fileList.Count;
-
-        public File this[int index]
-        {
-            get
-            {
-                if (index < 0 || index >= fileList.Count)
-                {
-                    throw new IndexOutOfRangeException("Індекс за межами діапазону.");
-                }
-                return fileList[index];
-            }
-            set
-            {
-                if (index < 0 || index >= fileList.Count)
-                {
-                    throw new IndexOutOfRangeException("Індекс за межами діапазону.");
-                }
-                fileList[index] = value;
-            }
-        }
-
-        public void Add(File element)
-        {
-            fileList.Add(element);
-            isSaved = false;
-        }
-
-        public void Delete(File element)
-        {
-            fileList.Remove(element);
-            isSaved = false;
-        }
-
-        public void Save(string fileName)
-        {
-            try
-            {
-                using (StreamWriter writer = new StreamWriter(fileName))
-                {
-                    writer.WriteLine(name);
-                    writer.WriteLine(description);
-                    writer.WriteLine(size);
-                    writer.WriteLine(kind);
-                    writer.WriteLine(fileList.Count);
-                    foreach (var file in fileList)
-                    {
-                        writer.WriteLine(file.FileName);
-                        writer.WriteLine(file.User);
-                        writer.WriteLine(file.LastModified.Ticks);
-                    }
-                }
-                isSaved = true;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Помилка при збереженні у файл: {ex.Message}");
-                isSaved = false;
-            }
-        }
-
-        public void Load(string fileName)
-        {
-            try
-            {
-                if (File.Exists(fileName))
-                {
-                    fileList.Clear();
-                    using (StreamReader reader = new StreamReader(fileName))
-                    {
-                        name = reader.ReadLine();
-                        description = reader.ReadLine();
-                        if (int.TryParse(reader.ReadLine(), out int s)) size = s;
-                        if (Enum.TryParse<KindOf>(reader.ReadLine(), out KindOf k)) kind = k;
-                        if (int.TryParse(reader.ReadLine(), out int count))
-                        {
-                            for (int i = 0; i < count; i++)
-                            {
-                                string fName = reader.ReadLine();
-                                string user = reader.ReadLine();
-                                if (long.TryParse(reader.ReadLine(), out long ticks))
-                                {
-                                    fileList.Add(new File(fName, user, new DateTime(ticks)));
-                                }
-                            }
-                        }
-                    }
-                    isSaved = true;
-                }
-                else
-                {
-                    Console.WriteLine($"Файл '{fileName}' не знайдено.");
-                    isSaved = false;
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Помилка при завантаженні з файлу: {ex.Message}");
-                isSaved = false;
-            }
-        }
-
-        public bool IsDataSaved => isSaved;
-
-        public IEnumerator<File> GetEnumerator()
-        {
-            return fileList.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-
-        public void Sort()
-        {
-            fileList.Sort((f1, f2) => f1.FileName.CompareTo(f2.FileName));
-        }
-    }
-
-    interface IContainer<T> : IEnumerable<T>
-    {
-        int Count { get; }
-        T this[int index] { get; set; }
-        void Add(T element);
-        void Delete(T element);
-    }
-
-    interface FileContainer : IContainer<File>
-    {
-        void Save(string fileName);
-        void Load(string fileName);
-        bool IsDataSaved { get; }
-    }
-
-    class Program
-    {
-        static void Main(string[] args)
-        {
-            
-            File file1 = new File("document.txt", "User1", DateTime.Now.AddDays(-1));
-            File file2 = new File("image.jpg", "User2", DateTime.Now);
-            File file3 = new File("archive.zip", "User1", DateTime.Now.AddHours(-2));
-            File file4 = new File("report.docx", "Admin", DateTime.Now.AddDays(-
-            Catalog catalog = new Catalog("Мій каталог", "Опис каталогу", 100, 
-            catalog.Add(file1);
-            catalog.Add(file2);
-            catalog.Add(file3);
-            catalog.Add(file4);
-
-            Console.WriteLine("Вміст контейнеру до сортування:");
-            foreach (var file in catalog)
-            {
-                Console.WriteLine(file);
-            }
-
-            
-            catalog.Sort();
-
-            Console.WriteLine("\nВміст контейнеру після сортування:");
-            foreach (var file in catalog)
-            {
-                Console.WriteLine(file);
-            }
-
-            
-            File file5 = new File("audio.mp3", "Guest", DateTime.Now.AddMinutes(-30));
-            catalog.Add(file5);
-            Console.WriteLine("\nВміст контейнеру після додавання нового об'єкту:");
-            foreach (var file in catalog)
-            {
-                Console.WriteLine(file);
-            }
-
-            
-            string fileName = "catalog_data.txt";
-            catalog.Save(fileName);
-            Console.WriteLine($"\nВміст контейнеру збережено у файл '{fileName}'.");
-
-            
-            Catalog newCatalog = new Catalog("Новий каталог", "Копія перших елементів", 50, KindOf.Documents);
-            if (catalog.Count >= 2)
-            {
-                newCatalog.Add(catalog[0]);
-                newCatalog.Add(catalog[1]);
-            }
-
-            Console.WriteLine("\nВміст нового контейнеру (копія перших 2 елементів):");
-            foreach (var file in newCatalog)
-            {
-                Console.WriteLine(file);
-            }
-
-            // Збереження вмісту нового контейнеру у файл
-            string newFileName = "new_catalog_data.txt";
-            newCatalog.Save(newFileName);
-            Console.WriteLine($"\nВміст нового контейнеру збережено у файл '{newFileName}'.");
-        }
-    }
+public int Count=> fileList.Count; \\ властивість що поверт кілк елем
+public File this [int index]
+{
+ get
+{ if (index< 0 || index >=fileList.Count);
+{
+throw new 
+    IndexOurOfRangeException("Індекс за межами діапазону");
 }
+return fileList[index];
+}
+set
+ { if (index< 0 || index >=fileList.Count);
+{
+throw new 
+    IndexOurOfRangeException("Індекс за межами діапазону");
+}
+fileList[index] = value;
+}
+public void plusElem (File element) 
+{ 
+fileList.Add(element);
+save = false;
+}
+public void delElem (File element) 
+{ 
+fileList.Remove(element);
+save = false;
+}
+    public void Save(string flName);
+{
+try
+{ using
