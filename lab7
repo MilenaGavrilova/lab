@@ -63,7 +63,7 @@ namespace Catalog
         private int size;
         privet Kind;\\ тип каталогу
         private List<File> fileList; \\ список 
-        private bool save = false; \\ чи було збережено
+        private bool issave = false; \\ чи було збережено
 
         public Catalog(string name, string opus, int size, Kind kind)
         {
@@ -95,14 +95,72 @@ fileList[index] = value;
 public void plusElem (File element) 
 { 
 fileList.Add(element);
-save = false;
+issave = false;
 }
 public void delElem (File element) 
 { 
 fileList.Remove(element);
-save = false;
+issave = false;
 }
-    public void Save(string flName);
+    public void issave(string fName);
 {
 try
-{ using
+{ using (StreamWriter sw = new StreamWriter(fName))
+{
+    sw.WriteLine(name);
+    sw.WriteLine(opus);
+    sw.WriteLine(size);
+    sw.WriteLine(kind);
+
+    foreach ( File file in fileList)
+{
+     sw.WriteLine($"{FName}|{file.User}|{file.Timelast}")
+}  
+    issave = true;
+}
+}
+
+    catch (Exception ex) \\виняток
+{ 
+  Console.WriteLine("Помилка");
+    issave = false;
+}
+}
+
+public void Load(string fName)
+{
+    try 
+    {
+        if(File.Exists(fName)) \\ перевірка шляху
+           { 
+                using (StreamReader rr = new StreamReader(fName))
+                {
+                    name = rr.ReadLine();
+                    opus = rr.ReadLine();
+                    if (int.TryParse(rr.ReadLine(), out int s)
+                        {size = s;}
+                    if (Enum.TryParse(rr.ReadLine(), out Kind k)
+                        {kind = k;}
+                    fileList.Clear();
+                    string line;
+                    while (line = rr.Reader()) != null) 
+                        { string[] p = line.Split('|');
+                            if (p.Length == 3 && DateTime.TryParse(p[2], out DataTime time)) 
+                              { fileList.Add( new File(p[0], p[1], time));
+                        }
+                        }
+                        issave = true;
+                        }
+                        else
+                        {
+                            Console.WriteLine("Файл не знайдено");
+                        issave = false;
+                        }
+                        catch (Exception ex)
+                        { Console.WriteLine("Error!");
+                        issave = false;
+                        }
+                        }
+                        public bool IsDataSaved => issave;
+
+
