@@ -6,165 +6,162 @@ using System.Linq;
 
 namespace Catalog
 {
-    public class Person : IComparable<Person>, ICloneable //два інтерфейси
-    {
-        public string Name { get; set; }
-        public string Surname { get; set; }
-        public DateTime BirthDate { get; set; }
+    public class Person : IComparable<Person>, ICloneable //два інтерфейси
+    {
+        public string Name { get; set; }
+        public string Surname { get; set; }
+        public DateTime BirthDate { get; set; }
 
-        public Person(string name, string surname, DateTime birthDate)
-        {
-            Name = name;
-            Surname = surname;
-            BirthDate = birthDate;
-        }
+        public Person(string name, string surname, DateTime birthDate)
+        {
+            Name = name;
+            Surname = surname;
+            BirthDate = birthDate;
+        }
 
-        public int Comp(Person other)
-        {
-            if (other == null) return 1; // порівняння name і datebirh
-            
-                int surnameComparison = Surname.Comp(other.Surname);
-            if (surnameComparison != 0) return surnameComparison;
-            int nameComparison = Name.Comp(other.Name);
-            if (nameComparison != 0) return nameComparison;
-            return BirthDate.Comp(other.BirthDate);
-        }
+        public int Comp(Person other)
+        {
+            if (other == null) return 1; // порівняння name і datebirh
+            
+                int surnameComparison = Surname.Comp(other.Surname);
+            if (surnameComparison != 0) return surnameComparison;
+            int nameComparison = Name.Comp(other.Name);
+            if (nameComparison != 0) return nameComparison;
+            return BirthDate.Comp(other.BirthDate);
+        }
 
-        public object Clone() //метод icloneable копіює обєкт Person
-        {
-            return new Person(this.Name, this.Surname, this.BirthDate);
-        }
+        public object Clone() //метод icloneable копіює обєкт Person
+        {
+            return new Person(this.Name, this.Surname, this.BirthDate);
+        }
 
-        public override string ToString() => $"Name: {Name}, Surname: {Surname}, BirthDate: {BirthDate.ToShortDateString()}"; // перевизначення повертає ряд person
-    }
+        public override string ToString() => $"Name: {Name}, Surname: {Surname}, BirthDate: {BirthDate.ToShortDateString()}"; // перевизначення повертає ряд person
+    }
 
-    public enum Kind { SystemPrograms, UserPrograms, Documents } // перерахування 
+    public enum Kind { SystemPrograms, UserPrograms, Documents } // перерахування 
 
-    public class File
-    {
-        public string FName { get; set; }
-        public string User { get; set; }
-        public DateTime Timelast { get; set; } //зміна файлу(час)
+    public class File
+    {
+        public string FName { get; set; }
+        public string User { get; set; }
+        public DateTime Timelast { get; set; } //зміна файлу(час)
 
-        public File(string fname, string user, DateTime timelast)
-        {
-            FName = fname;
-            User = user;
-            Timelast = timelast;
-        }
+        public File(string fname, string user, DateTime timelast)
+        {
+            FName = fname;
+            User = user;
+            Timelast = timelast;
+        }
 
-        public override string ToString() => $"FName: {FName}, User: {User}, Timelast: {Timelast}";
-    }
+        public override string ToString() => $"FName: {FName}, User: {User}, Timelast: {Timelast}";
+    }
 
-    public class Catalog : IContainer<File>, Filecontr // filecont розширює  icontainer
-    {
-        private string name;
-        private string opus; \\ опис класу
-        private int size;
-        privet Kind;\\ тип каталогу
-        private List<File> fileList; \\ список 
-        private bool issave = false; \\ чи було збережено
+    public class Catalog : IContainer<File>, Filecontr // filecont розширює  icontainer
+    {
+        private string name;
+        private string opus; \\ опис класу
+        private int size;
+        privet Kind;\\ тип каталогу
+        private List<File> fileList; \\ список 
+        private bool issave = false; \\ чи було збережено
 
-        public Catalog(string name, string opus, int size, Kind kind)
-        {
-            this.name = name;
-            this.opus = opus;
-            this.size = size;
-            this.kind = kind;
-            this.fileList = new List<File>(); \\ порожній список для зберігання обєктів
-        }
+        public Catalog(string name, string opus, int size, Kind kind)
+        {
+            this.name = name;
+            this.opus = opus;
+            this.size = size;
+            this.kind = kind;
+            this.fileList = new List<File>(); \\ порожній список для зберігання обєктів
+        }
 public int Count=> fileList.Count; \\ властивість що поверт кілк елем
 public File this [int index]
 {
- get
+ get
 { if (index< 0 || index >=fileList.Count);
 {
-throw new 
-    IndexOurOfRangeException("Індекс за межами діапазону");
+throw new 
+    IndexOurOfRangeException("Індекс за межами діапазону");
 }
 return fileList[index];
 }
 set
- { if (index< 0 || index >=fileList.Count);
+ { if (index< 0 || index >=fileList.Count);
 {
-throw new 
-    IndexOurOfRangeException("Індекс за межами діапазону");
+throw new 
+    IndexOurOfRangeException("Індекс за межами діапазону");
 }
 fileList[index] = value;
 }
-public void plusElem (File element) 
-{ 
+public void plusElem (File element) 
+{ 
 fileList.Add(element);
 issave = false;
 }
-public void delElem (File element) 
-{ 
+public void delElem (File element) 
+{ 
 fileList.Remove(element);
 issave = false;
 }
-    public void issave(string fName);
+    public void issave(string fName);
 {
 try
 { using (StreamWriter sw = new StreamWriter(fName))
 {
-    sw.WriteLine(name);
-    sw.WriteLine(opus);
-    sw.WriteLine(size);
-    sw.WriteLine(kind);
+    sw.WriteLine(name);
+    sw.WriteLine(opus);
+    sw.WriteLine(size);
+    sw.WriteLine(kind);
 
-    foreach ( File file in fileList)
+    foreach ( File file in fileList)
 {
-     sw.WriteLine($"{FName}|{file.User}|{file.Timelast}")
-}  
-    issave = true;
+     sw.WriteLine($"{FName}|{file.User}|{file.Timelast}")
+}  
+    issave = true;
 }
 }
 
-    catch (Exception ex) \\виняток
-{ 
-  Console.WriteLine("Помилка");
-    issave = false;
+    catch (Exception ex) \\виняток
+{ 
+  Console.WriteLine("Помилка");
+    issave = false;
 }
 }
 
 public void Load(string fName)
 {
-    try 
-    {
-        if(File.Exists(fName)) \\ перевірка шляху
-           { 
-                using (StreamReader rr = new StreamReader(fName))
-                {
-                    name = rr.ReadLine();
-                    opus = rr.ReadLine();
-                    if (int.TryParse(rr.ReadLine(), out int s)
-                        {size = s;}
-                    if (Enum.TryParse(rr.ReadLine(), out Kind k)
-                        {kind = k;}
-                    fileList.Clear();
-                    string line;
-                    while (line = rr.Reader()) != null) 
-                        { string[] p = line.Split('|');
-                            if (p.Length == 3 && DateTime.TryParse(p[2], out DataTime time)) 
-                              { fileList.Add( new File(p[0], p[1], time));
-                        }
-                        }
-                        issave = true;
-                        }
-                        else
-                        {
-                            Console.WriteLine("Файл не знайдено");
-                        issave = false;
-                        }
-                        catch (Exception ex)
-                        { Console.WriteLine("Error!");
-                        issave = false;
-                        }
-                        }
-                        public bool IsDataSaved => issave;
-
-
-
+    try 
+    {
+        if(File.Exists(fName)) \\ перевірка шляху
+           { 
+                using (StreamReader rr = new StreamReader(fName))
+                {
+                    name = rr.ReadLine();
+                    opus = rr.ReadLine();
+                    if (int.TryParse(rr.ReadLine(), out int s)
+                        {size = s;}
+                    if (Enum.TryParse(rr.ReadLine(), out Kind k)
+                        {kind = k;}
+                    fileList.Clear();
+                    string line;
+                    while (line = rr.Reader()) != null) 
+                        { string[] p = line.Split('|');
+                            if (p.Length == 3 && DateTime.TryParse(p[2], out DataTime time)) 
+                              { fileList.Add( new File(p[0], p[1], time));
+                        }
+                        }
+                        issave = true;
+                        }
+                        else
+                        {
+                            Console.WriteLine("Файл не знайдено");
+                        issave = false;
+                        }
+                        catch (Exception ex)
+                        { Console.WriteLine("Error!");
+                        issave = false;
+                        }
+                        }
+                        public bool IsDataSaved => issave;
 public IEnumerator<File> GetEnumerator()
         {
             return fileList.GetEnumerator();
@@ -243,4 +240,3 @@ public IEnumerator<File> GetEnumerator()
         }
     }
 }
-
