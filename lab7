@@ -164,3 +164,83 @@ public void Load(string fName)
                         public bool IsDataSaved => issave;
 
 
+
+public IEnumerator<File> GetEnumerator()
+        {
+            return fileList.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        public void Sort()
+        {
+            fileList.Sort((f1, f2) => f1.FName.CompareTo(f2.FName));
+        }
+
+        public Catalog copyel1(int count)
+        {
+            Catalog catalogcop = new Catalog("catalogcop", "Copied elements", count, this.kind);
+            int copyel = Math.Min(count, fileList.Count);
+            for (int i = 0; i < copyel; i++)
+            {
+                catalogcop.Add(fileList[i]);
+            }
+            return catalogcop;
+        }
+    }
+
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            List<Person> people = new List<Person>();
+            people.Add(new Person("Іван", "Петренко", new DateTime(1990, 5, 15)));
+            people.Add(new Person("Марія", "Сидоренко", new DateTime(1985, 12, 20)));
+            people.Add(new Person("Петро", "Іванов", new DateTime(2000, 3, 10)));
+
+            people.Sort();
+
+            Console.WriteLine("Відсортовані об'єкти Person:");
+            foreach (Person person in people)
+            {
+                Console.WriteLine(person);
+            }
+
+            Catalog catalog = new Catalog("MyCatalog", "Description", 100, Kind.Documents);
+            catalog.Add(new File("doc1.txt", "user1", DateTime.Now.AddDays(-1)));
+            catalog.Add(new File("image.jpg", "user2", DateTime.Now.AddHours(-5)));
+            catalog.Add(new File("report.docx", "user1", DateTime.Now));
+
+            Console.WriteLine("\nВміст каталогу:");
+            foreach (File file in catalog)
+            {
+                Console.WriteLine(file);
+            }
+
+            catalog.Sort();
+            Console.WriteLine("\nВміст відсортованого каталогу:");
+            foreach (File file in catalog)
+            {
+                Console.WriteLine(file);
+            }
+
+            catalog.Add(new File("new_file.txt", "guest", DateTime.Now.AddDays(1)));
+            Console.WriteLine("\nВміст каталогу після додавання:");
+            foreach (File file in catalog)
+            {
+                Console.WriteLine(file);
+            }
+
+            Catalog copiedCatalog = catalog.copyel1(2);
+            Console.WriteLine("\nВміст скопійованого каталогу:");
+            foreach (File file in copiedCatalog)
+            {
+                Console.WriteLine(file);
+            }
+        }
+    }
+}
+
