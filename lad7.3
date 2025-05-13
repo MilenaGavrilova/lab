@@ -15,15 +15,15 @@ class ACipher : ICipher
         {
             if (char.IsLetter(c))
             {
-                char baseChar = char.IsUpper(c) ? 'A' : 'a';
-                result += (char)(((c - baseChar + 1) % 26) + baseChar);
+                char BaseC = char.IsUpper(c) ? 'A' : 'a';
+                result += (char)(((c - BaseC + 1) % 26) + BaseC);  // зсувае литеру на 1 ( 26 кількість букв) 
             }
             else
             {
                 result += c;
             }
         }
-        return result;
+        return result; 
     }
 
     public string decode(string text)
@@ -31,10 +31,10 @@ class ACipher : ICipher
         string result = "";
         foreach (char c in text)
         {
-            if (char.IsLetter(c))
+            if (char.IsLetter(c))     // чи є ця літера с
             {
-                char baseChar = char.IsUpper(c) ? 'A' : 'a';
-                result += (char)(((c - baseChar - 1 + 26) % 26) + baseChar);
+                char BaseC = char.IsUpper(c) ? 'A' : 'a';     //для маленьких и великих
+                result += (char)(((c - BaseC - 1 + 26) % 26) + baseC); // з відємними числами зсувае литеру на 1 ( 26 кількість букв) у зворотньщму напр
             }
             else
             {
@@ -54,8 +54,8 @@ class BCipher : ICipher
         {
             if (char.IsLetter(c))
             {
-                char baseChar = char.IsUpper(c) ? 'A' : 'a';
-                result += (char)(baseChar + 25 - (c - baseChar));
+                char BaseC = char.IsUpper(c) ? 'A' : 'a';
+                result += (char)(BaseC + 25 - (c - baseC));   // замінює літеру на літеру з кінця
             }
             else
             {
@@ -75,8 +75,7 @@ class Program
 {
     static void Main(string[] args)
     {
-        string originalText = "Hello World! 123";
-
+        string originalText = "Hello World!";
         ICipher aCipher = new ACipher();
         string encodedA = aCipher.encode(originalText);
         string decodedA = aCipher.decode(encodedA);
@@ -84,7 +83,6 @@ class Program
         ICipher bCipher = new BCipher();
         string encodedB = bCipher.encode(originalText);
         string decodedB = bCipher.decode(encodedB);
-
         Console.WriteLine(originalText);
         Console.WriteLine(encodedA);
         Console.WriteLine(decodedA);
