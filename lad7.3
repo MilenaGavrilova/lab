@@ -1,0 +1,94 @@
+using System;
+
+interface ICipher
+{
+    string encode(string text);
+    string decode(string text);
+}
+
+class ACipher : ICipher
+{
+    public string encode(string text)
+    {
+        string result = "";
+        foreach (char c in text)
+        {
+            if (char.IsLetter(c))
+            {
+                char baseChar = char.IsUpper(c) ? 'A' : 'a';
+                result += (char)(((c - baseChar + 1) % 26) + baseChar);
+            }
+            else
+            {
+                result += c;
+            }
+        }
+        return result;
+    }
+
+    public string decode(string text)
+    {
+        string result = "";
+        foreach (char c in text)
+        {
+            if (char.IsLetter(c))
+            {
+                char baseChar = char.IsUpper(c) ? 'A' : 'a';
+                result += (char)(((c - baseChar - 1 + 26) % 26) + baseChar);
+            }
+            else
+            {
+                result += c;
+            }
+        }
+        return result;
+    }
+}
+
+class BCipher : ICipher
+{
+    public string encode(string text)
+    {
+        string result = "";
+        foreach (char c in text)
+        {
+            if (char.IsLetter(c))
+            {
+                char baseChar = char.IsUpper(c) ? 'A' : 'a';
+                result += (char)(baseChar + 25 - (c - baseChar));
+            }
+            else
+            {
+                result += c;
+            }
+        }
+        return result;
+    }
+
+    public string decode(string text)
+    {
+        return encode(text);
+    }
+}
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        string originalText = "Hello World! 123";
+
+        ICipher aCipher = new ACipher();
+        string encodedA = aCipher.encode(originalText);
+        string decodedA = aCipher.decode(encodedA);
+
+        ICipher bCipher = new BCipher();
+        string encodedB = bCipher.encode(originalText);
+        string decodedB = bCipher.decode(encodedB);
+
+        Console.WriteLine(originalText);
+        Console.WriteLine(encodedA);
+        Console.WriteLine(decodedA);
+        Console.WriteLine(encodedB);
+        Console.WriteLine(decodedB);
+    }
+}
