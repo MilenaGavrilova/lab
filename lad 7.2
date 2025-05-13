@@ -219,9 +219,9 @@ class Program
         Registry registry = new Registry();
 
         Airplane airplane1 = new Airplane("BF 53", "big", "Turbo", 56000);
-        Helicopter vertolit1 = new Vertolit("M 58", "medium ", "Turbo", 1922, new List<KrulaVertolit> { new KrulaVertolit("Complex"), new KrulaVertolit("Metal") });
+        Vertolit vertolit1 = new Vertolit("M 58", "medium ", "Turbo", 1922, new List<KrulaVertolit> { new KrulaVertolit("Complex"), new KrulaVertolit("Metal") });
         Balloon balloon1 = new Balloon(" HG 67", "thermal ", "Nylon",1222);
-        HangGlider deltaPlan1 = new DeltaPlan("AP 87 ", "High plan", "Complex", 1);
+        DeltaPlan deltaPlan1 = new DeltaPlan("AP 87 ", "High plan", "Complex", 1);
         FlyingCarpet flyingCarpet1 = new FlyingCarpet("Fast", "Magic ", "Wool", "Red");
 
         registry.AddObladnanya(airplane1);
