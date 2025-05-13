@@ -83,7 +83,7 @@ class Vertolit : Device, IEngine, ICopyrable<Vertolit>
     }
 }
 
-class KrulaVertolit : IPart, ICloneable<KrulaVertolit>
+class KrulaVertolit : IPart, ICopyrable<KrulaVertolit>
 {
     public string partName => "KruloVertolit";
     public string material { get; }
