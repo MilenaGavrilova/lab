@@ -20,12 +20,12 @@ interface IPart
     string material { get; }
 }
 
-interface ICloneable<T>
+interface ICopyrable<T>
 {
-    T Clone();
+    T Copyr();
 }
 
-class Device : IDevice, ICloneable<Device>
+class Device : IDevice, ICopyrable<Device>
 {
     public string name { get; }
     public string description { get; }
@@ -36,13 +36,13 @@ class Device : IDevice, ICloneable<Device>
         this.description = description;
     }
 
-    public Device Clone()
+    public Device Copyr()
     {
         return new Device(name, description);
     }
 }
 
-class Airplane : Device, IEngine, ICloneable<Airplane>
+class Airplane : Device, IEngine, ICopyrable<Airplane>
 {
     public string engineType { get; }
     public int powersize { get; }
@@ -53,33 +53,33 @@ class Airplane : Device, IEngine, ICloneable<Airplane>
         this.powersize = powersize;
     }
 
-    public Airplane Clone()
+    public Airplane Copyr()
     {
         return new Airplane(name, description, engineType, powersize);
     }
 }
 
-class Helicopter : Device, IEngine, ICloneable<Helicopter>
+class Vertolit : Device, IEngine, ICopyrable<Vertolit>
 {
     public string engineType { get; }
     public int powersize { get; }
     public List<KrulaVertolit> krulavertolit { get; }
 
-    public Helicopter(string name, string description, string engineType, int powersize, List<KrulaVertolit> krulavertolit) : base(name, description)
+    public Vertolit(string name, string description, string engineType, int powersize, List<KrulaVertolit> krulavertolit) : base(name, description)
     {
         this.engineType = engineType;
         this.powersize = powersize;
         this.krulavertolit = krulavertolit;
     }
 
-    public Helicopter Clone()
+    public Vertolit Copyr()
     {
-        List<KrulaVertolit> скопійованіKrulavertolit = new List<KrulaVertolit>();
+        List<KrulaVertolit> CopyrKrulavertolit = new List<KrulaVertolit>();
         foreach (var krulo in krulavertolit)
         {
-            скопійованіKrulavertolit.Add(krulo.Clone());
+            CopyrKrulavertolit.Add(krulo.Copyr());
         }
-        return new Helicopter(name, description, engineType, powersize, скопійованіKrulavertolit);
+        return new Vertolit(name, description, engineType, powersize, CopyrKrulavertolit);
     }
 }
 
@@ -93,13 +93,13 @@ class KrulaVertolit : IPart, ICloneable<KrulaVertolit>
         this.material = material;
     }
 
-    public KrulaVertolit Clone()
+    public KrulaVertolit Copyr()
     {
         return new KrulaVertolit(material);
     }
 }
 
-class Balloon : Device, ICloneable<Balloon>
+class Balloon : Device, ICopyrable<Balloon>
 {
     public string materialKonverta { get; }
     public int volume { get; }
@@ -110,26 +110,26 @@ class Balloon : Device, ICloneable<Balloon>
         this.volume = volume;
     }
 
-    public Balloon Clone()
+    public Balloon Copyr()
     {
         return new Balloon(name, description, materialKonverta, volume);
     }
 }
 
-class HangGlider : Device, ICloneable<HangGlider>
+class DeltaPlan : Device, ICopyrable<DeltaPlan>
 {
     public string materialKrula { get; }
     public double rosmahKrula { get; }
 
-    public HangGlider(string name, string description, string materialKrula, double rosmahKrula) : base(name, description)
+    public DeltaPlan(string name, string description, string materialKrula, double rosmahKrula) : base(name, description)
     {
         this.materialKrula = materialKrula;
         this.rosmahKrula = rosmahKrula;
     }
 
-    public HangGlider Clone()
+    public DeltaPlan Copyr()
     {
-        return new HangGlider(name, description, materialKrula, rosmahKrula);
+        return new DeltaPlan(name, description, materialKrula, rosmahKrula);
     }
 }
 
@@ -144,7 +144,7 @@ class FlyingCarpet : Device, ICloneable<FlyingCarpet>
         this.color = color;
     }
 
-    public FlyingCarpet Clone()
+    public FlyingCarpet Copyr()
     {
         return new FlyingCarpet(name, description, materialP, color);
     }
@@ -159,7 +159,7 @@ class Registry
         obladnananya.Add(device);
     }
 
-    public void DisplayAllEquipment()
+    public void DisplayAllObladnanya()
     {
         foreach (var device in obladnananya)
         {
@@ -167,7 +167,7 @@ class Registry
         }
     }
 
-    public void DisplayEquipmentWithEngines()
+    public void DisplayObladnanyaWithEngines()
     {
         foreach (var device in obladnananya.OfType<IEngine>())
         {
@@ -175,7 +175,7 @@ class Registry
         }
     }
 
-    public void DisplayEquipmentWithoutEngines()
+    public void DisplayObladnanyaWithoutEngines()
     {
         foreach (var device in obladnananya)
         {
@@ -188,7 +188,7 @@ class Registry
 
     public void SortByName()
     {
-        obladnananya = obladnananya.OrderBy(e => e.name).ToList();
+        obladnananya = obladnananya.OrderBy(e => e.name).ToList();  //сортування (лямда вираз)
     }
 
     public void SortZrostanna()
@@ -198,15 +198,15 @@ class Registry
 
     public void SortSpadanna()
     {
-        obladnananya = obladnananya.OrderByDescending(e => e.description.Length).ToList();
+        obladnananya = obladnananya.OrderByDescending(e => e.description.Length).ToList(); 
     }
 
-    public List<T> CopyEquipment<T>() where T : IDevice, ICloneable<T>
+    public List<T> CopyObladnanya<T>() where T : IDevice, ICopyrable<T>
     {
         List<T> copies = new List<T>();
         foreach (var device in obladnananya.OfType<T>())
         {
-            copies.Add(device.Clone());
+            copies.Add(device.Copyr());
         }
         return copies;
     }
@@ -218,40 +218,40 @@ class Program
     {
         Registry registry = new Registry();
 
-        Airplane airplane1 = new Airplane("Boeing 747", "Large passenger airplane", "Turbofan", 27000);
-        Helicopter helicopter1 = new Helicopter("Mi-8", "Medium transport helicopter", "Turboshaft", 1900, new List<KrulaVertolit> { new KrulaVertolit("Composite"), new KrulaVertolit("Metal") });
-        Balloon balloon1 = new Balloon("Ultramagic M-77", "Thermal air balloon", "Nylon", 2200);
-        HangGlider hangGlider1 = new HangGlider("Atos VX", "High-performance hang glider", "Composite", 10.5);
-        FlyingCarpet flyingCarpet1 = new FlyingCarpet("Fast Carpet", "Magic flying carpet", "Wool", "Red");
+        Airplane airplane1 = new Airplane("BF 53", "big", "Turbo", 56000);
+        Helicopter vertolit1 = new Vertolit("M 58", "medium ", "Turbo", 1922, new List<KrulaVertolit> { new KrulaVertolit("Complex"), new KrulaVertolit("Metal") });
+        Balloon balloon1 = new Balloon(" HG 67", "thermal ", "Nylon",1222);
+        HangGlider deltaPlan1 = new DeltaPlan("AP 87 ", "High plan", "Complex", 1);
+        FlyingCarpet flyingCarpet1 = new FlyingCarpet("Fast", "Magic ", "Wool", "Red");
 
         registry.AddObladnanya(airplane1);
-        registry.AddObladnanya(helicopter1);
+        registry.AddObladnanya(vertolit1);
         registry.AddObladnanya(balloon1);
-        registry.AddObladnanya(hangGlider1);
+        registry.AddObladnanya(deltaPlan1);
         registry.AddObladnanya(flyingCarpet1);
 
-        registry.DisplayAllEquipment();
+        registry.DisplayAllObladnanya();
         Console.WriteLine();
 
-        registry.DisplayEquipmentWithEngines();
+        registry.DisplayObladnanyaWithEngines();
         Console.WriteLine();
 
-        registry.DisplayEquipmentWithoutEngines();
+        registry.DisplayObladnanyaWithoutEngines();
         Console.WriteLine();
 
         registry.SortByName();
-        registry.DisplayAllEquipment();
+        registry.DisplayAllObladnanya();
         Console.WriteLine();
 
         registry.SortZrostanna();
-        registry.DisplayAllEquipment();
+        registry.DisplayAllObladnanya();
         Console.WriteLine();
 
         registry.SortSpadanna();
-        registry.DisplayAllEquipment();
+        registry.DisplayAllObladnanya();
         Console.WriteLine();
 
-        List<Airplane> airplaneCopies = registry.CopyEquipment<Airplane>();
+        List<Airplane> airplaneCopies = registry.CopyObladnanya<Airplane>();
         Console.WriteLine("Number of airplane copies: " + airplaneCopies.Count);
     }
 }
