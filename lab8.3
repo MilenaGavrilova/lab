@@ -1,0 +1,54 @@
+using System;
+using System.Linq;
+using System.Collections.Generic;
+
+public class Program
+{
+    public static void Main(string[] args)
+    {
+        Func<int[], int> kilkistKratnyhSemy = array => array.Count(n => n % 7 == 0);
+
+        int[] chisla1 = { 7, 28, 42, 5, 12, 49 };
+        Console.WriteLine($"Кількість чисел, кратних семи у [7, 28, 42, 5, 12, 49]: {kilkistKratnyhSemy(chisla1)}");
+        int[] chisla2 = { 1, 2, 3, 4, 5, 6 };
+        Console.WriteLine($"Кількість чисел, кратних семи у [1, 2, 3, 4, 5, 6]: {kilkistKratnyhSemy(chisla2)}");
+
+        Func<int[], int> kilkistPozytyvnyh = array => array.Count(n => n > 0);
+
+        int[] chisla3 = { -10, -1, 0, 100, 50, -20 };
+        Console.WriteLine($"Кількість позитивних чисел у [-10, -1, 0, 100, 50, -20]: {kilkistPozytyvnyh(chisla3)}");
+        int[] chisla4 = { 0, -5, -15, -25 };
+        Console.WriteLine($"Кількість позитивних чисел у [0, -5, -15, -25]: {kilkistPozytyvnyh(chisla4)}");
+
+        Func<DateTime, bool> tseyDenProgramista = date => date.DayOfYear == 256;
+
+        DateTime pervyyDenRoku = new DateTime(2025, 1, 1);
+        Console.WriteLine($"01.01.2025 - день програміста: {tseyDenProgramista(pervyyDenRoku)}");
+        DateTime seredynaRoku = new DateTime(2025, 6, 15);
+        Console.WriteLine($"15.06.2025 - день програміста: {tseyDenProgramista(seredynaRoku)}");
+        DateTime denProgramista2024 = new DateTime(2024, 9, 12);
+        Console.WriteLine($"12.09.2024 - день програміста: {tseyDenProgramista(denProgramista2024)}");
+
+        Func<string, string[], bool> tekstMistytSlova = (text, words) =>
+        {
+            if (string.IsNullOrEmpty(text)  words == null  !words.Any())
+            {
+                return false;
+            }
+            return words.Any(word => text.Contains(word, StringComparison.OrdinalIgnoreCase));
+        };
+
+        string zagolovok = "Це великий текст для перевірки наявності різних слів.";
+        string[] poshukSlova1 = { "великий" };
+        Console.WriteLine($"Текст \"{zagolovok}\" містить 'великий': {tekstMistytSlova(zagolovok, poshukSlova1)}");
+
+        string[] poshukSlova2 = { "відсутнє", "перевірки" };
+        Console.WriteLine($"Текст \"{zagolovok}\" містить 'відсутнє' або 'перевірки': {tekstMistytSlova(zagolovok, poshukSlova2)}");
+
+        string[] poshukSlova3 = { "текст", "наявності" };
+        Console.WriteLine($"Текст \"{zagolovok}\" містить 'текст' або 'наявності': {tekstMistytSlova(zagolovok, poshukSlova3)}");
+
+        string[] poshukSlova4 = { "слова" };
+        Console.WriteLine($"Текст \"{zagolovok}\" містить 'слова': {tekstMistytSlova(zagolovok, poshukSlova4)}");
+    }
+}
