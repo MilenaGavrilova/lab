@@ -1,0 +1,65 @@
+using System;
+using System.Linq;
+
+public class Program
+{
+    public static void Main(string[] args)
+    {
+        Action displayTime = () => Console.WriteLine($"Поточний час: {DateTime.Now.ToShortTimeString()}");
+        Action displayDate = () => Console.WriteLine($"Поточна дата: {DateTime.Now.ToShortDateString()}");
+        Action displayDayOfWeek = () => Console.WriteLine($"Поточний день тижня: {DateTime.Now.DayOfWeek}");
+
+        displayTime();
+        displayDate();
+        displayDayOfWeek();
+
+        Predicate<int> isPrime = n =>
+        {
+            if (n <= 1) return false;
+            for (int i = 2; i * i <= n; i++)
+            {
+                if (n % i == 0) return false;
+            }
+            return true;
+        };
+
+        int num1 = 7;
+        Console.WriteLine($"{num1} є простим числом: {isPrime(num1)}");
+        int num2 = 10;
+        Console.WriteLine($"{num2} є простим числом: {isPrime(num2)}");
+
+        Predicate<int> isFibonacci = n =>
+        {
+            if (n < 0) return false;
+            if (n == 0 || n == 1) return true;
+
+            int a = 0;
+            int b = 1;
+            while (b < n)
+            {
+                int k = a + b;
+                a = b;
+                b = k;
+            }
+            return b == n;
+        };
+
+        int fibNum1 = 8;
+        Console.WriteLine($"{fibNum1} є числом Фібоначчі: {isFibonacci(fibNum1)}");
+        int fibNum2 = 12;
+        Console.WriteLine($"{fibNum2} є числом Фібоначчі: {isFibonacci(fibNum2)}");
+
+        Func<double, double, double> calculateTriangleArea = (baseLength, height) => 0.5 * baseLength * height;
+        Func<double, double, double> calculateRectangleArea = (width, height) => width * height;
+
+        double tBase = 5.0;
+        double tHeight = 10.0;
+        double triangleArea = calculateTriangleArea(tBase, tHeight);
+        Console.WriteLine($"Площа трикутника з основою {tBase} та висотою {tHeight}: {triangleArea}");
+
+        double rWidth = 7.0;
+        double rHeight = 8.0;
+        double rectangleArea = calculateRectangleArea(rWidth, rHeight);
+        Console.WriteLine($"Площа прямокутника з шириною {rWidth} та висотою {rHeight}: {rectangleArea}");
+    }
+}
