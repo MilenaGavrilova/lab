@@ -1,0 +1,146 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+public class RekomendovaniyObiemyPerevyshennya : Exception
+{
+    public RekomendovanoyObiemyPerevyshennya(string message) : base(message) { }
+}
+
+public class Predmet
+{
+    public string name { get; set; }
+    public double obiemy { get; set; }
+
+    public Predmet(string name, double obiemy)
+    {
+        this.name = name;
+        this.obiemy = obiemy;
+    }
+}
+
+public class Valiza
+{
+    public string color { get; set; }
+    public string firmaVyrobnyk { get; set; }
+    public double vagaValizy { get; set; }
+    public double obiemyValizy { get; set; }
+    public List<Predmet> vmystValizy { get; set; }
+
+    public event Action<Valiza, Predmet> dobavlennyaPredmeta;
+
+    public Valiza()
+    {
+        vmystValizy = new List<Predmet>();
+        dobavlennyaPredmeta += (valiza, predmet) =>
+        {
+            double potochniyObiemy = valiza.vmystValizy.Sum(p => p.obiemy);
+            if (potochniyObiemy + predmet.obiemy > valiza.obiemyValizy)
+            {
+                throw new RekomendovaniyObiemyPerevyshennya($"Неможливо додати {predmet.nazva}. Об'єм валізи буде перевищено.");
+            }
+
+            valiza.vmystValizy.Add(predmet);
+            Console.WriteLine($"Додано: {predmet.nazva}. Поточний об'єм: {valiza.vmystValizy.Sum(p => p.obiemy)}/{valiza.obiemyValizy}");
+        };
+    }
+
+    public void UstanovytyColor(string color) => this.color = color;
+    public void UstanovytyFirmy(string firma) => firmaVyrobnyk = firma;
+    public void UstanovytyVagu(double vaga) => vagaValizy = vaga;
+    public void UstanovytyObiemy(double obiemy) => obiemyValizy = obiemy;
+
+    public void SprobuyDodatyPredmet(Predmet predmet)
+    {
+        try
+        {
+            dobavlennyaPredmeta?.Invoke(this, predmet);
+        }
+        catch (RekomendovaniyObiemyPerevyshennya e)
+        {
+            Console.WriteLine($"Помилка: {e.Message}");
+            double vilnyyObiemy = obiemyValizy - vmystValizy.Sum(p => p.obiemy);
+            if (vilnyyObiemy >= predmet.obiemy)
+            {
+                 Console.WriteLine($"Насправді об'єкт {predmet.name} може поміститись. Він займає {predmet.obiemy}. Вільний об'єм: {vilnyyObiemy}.");
+            }
+
+            if (vmystValizy.Count == 1)
+            {
+                Console.WriteLine("У валізі лише один об'єкт. Спроба замінити його на менші об'єкти.");
+                Predmet yedynyyObiemy = vmystValizy[0];
+                vmystValizy.Clear();
+                Console.WriteLine($"Видалено {yedynyyObiemy.nazva}.");
+
+                List<Predmet> mozhlyviAlternatyvy = new List<Predmet>
+                {
+                    new Predmet("Zoshyt", 0.5),
+                    new Predmet("Ruska", 0.1),
+                    new Predmet("Voda", 1.0),
+                    new Predmet("Gamanets", 0.2),
+                    new Predmet("Telefon", 0.3)
+                };
+
+                List<Predmet> piddihodniPredmety = new List<Predmet>();
+                double potochniyObiemyAlternatyv = 0;
+
+                foreach (var altPredmet in mozhlyviAlternatyvy.OrderBy(p => p.obiemy))
+                {
+                    if (piddihodniPredmety.Count >= 3) break;
+                    if (potochniyObiemyAlternatyv + altPredmet.obiemy <= obiemyValizy)
+                    {
+                        piddihodniPredmety.Add(altPredmet);
+                        potochniyObiemyAlternatyv += altPredmet.obiemy;
+                    }
+                }
+
+                if (piddihodniPredmety.Count >= 3)
+                {
+                    vmystValizy.AddRange(piddihodniPredmety);
+                    Console.WriteLine("Додано альтернативні об'єкти:");
+                    foreach (var p in piddihodniPredmety)
+                    {
+                        Console.WriteLine($"- {p.nazva} ({p.obiemy})");
+                    }
+                    Console.WriteLine($"Новий загальний об'єм: {vmystValizy.Sum(p => p.obiemy)}/{obiemyValizy}");
+                }
+                else
+                {
+                    Console.
+                    WriteLine("Не вдалося знайти достатньо альтернативних об'єктів (мінімум 3).");
+                    vmystValizy.Add(yedynyyObiemy);
+                    Console.WriteLine($"Один об'єкт {yedynyyObiemy.nazva} повернуто у валізу.");
+                }
+            }
+        }
+    }
+}
+
+public class Program
+{
+    public static void Main(string[] args)
+    {
+        Valiza moyaValiza = new Valiza();
+        moyaValiza.UstanovytyKolir("Chornyy");
+        moyaValiza.UstanovytyFirmy("Samsonite");
+        moyaValiza.UstanovytyVagu(3.5);
+        moyaValiza.UstanovytyObiemy(10.0);
+
+        Console.WriteLine($"Валіза: {moyaValiza.kolir}, {moyaValiza.firmaVyrobnyk}, {moyaValiza.obiemyValizy}L");
+
+        moyaValiza.SprobuyDodatyPredmet(new Predmet("Noutbuk", 3.0));
+        moyaValiza.SprobuyDodatyPredmet(new Predmet("Kamera", 2.0));
+        moyaValiza.SprobuyDodatyPredmet(new Predmet("Sok", 4.0));
+        moyaValiza.SprobuyDodatyPredmet(new Predmet("Tort", 5.0));
+
+        Console.WriteLine("--- Тест умови з одним об'єктом ---");
+        Valiza inshaValiza = new Valiza();
+        inshaValiza.UstanovytyKolir("Chervona");
+        inshaValiza.UstanovytyFirmy("Traveler");
+        inshaValiza.UstanovytyVagu(2.0);
+        inshaValiza.UstanovytyObiemy(5.0);
+
+        inshaValiza.SprobuyDodatyPredmet(new Predmet("VelykyySvetr", 4.5));
+        inshaValiza.SprobuyDodatyPredmet(new Predmet("Duykaly", 1.0));
+    }
+}
