@@ -72,7 +72,7 @@ public class Valiza
                 vmystValizy.Clear();
                 Console.WriteLine($"Видалено {yedynyyObiemy.nazva}.");
 
-                List<Predmet> mozhlyviAlternatyvy = new List<Predmet>
+               Predmet[] mozhlyviAlternatyvy = new Predmet
                 {
                     new Predmet("Zoshyt", 0.5),
                     new Predmet("Ruska", 0.1),
@@ -81,7 +81,7 @@ public class Valiza
                     new Predmet("Telefon", 0.3)
                 };
 
-                List<Predmet> piddihodniPredmety = new List<Predmet>();
+               Predmet[] piddihodniPredmety = new Predmet();
                 double potochniyObiemyAlternatyv = 0;
 
                 foreach (var altPredmet in mozhlyviAlternatyvy.OrderBy(p => p.obiemy))
@@ -106,8 +106,7 @@ public class Valiza
                 }
                 else
                 {
-                    Console.
-                    WriteLine("Не вдалося знайти достатньо альтернативних об'єктів (мінімум 3).");
+                    Console.WriteLine("Не вдалося знайти достатньо альтернативних об'єктів (мінімум 3).");
                     vmystValizy.Add(yedynyyObiemy);
                     Console.WriteLine($"Один об'єкт {yedynyyObiemy.nazva} повернуто у валізу.");
                 }
