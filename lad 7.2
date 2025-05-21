@@ -63,7 +63,7 @@ class Vertolit : Device, IEngine, ICopyrable<Vertolit>
 {
     public string engineType { get; }
     public int powersize { get; }
-    public List<KrulaVertolit> krulavertolit { get; }
+    public KrulaVertolit[] krulavertolit { get; }
 
     public Vertolit(string name, string description, string engineType, int powersize, List<KrulaVertolit> krulavertolit) : base(name, description)
     {
@@ -74,7 +74,7 @@ class Vertolit : Device, IEngine, ICopyrable<Vertolit>
 
     public Vertolit Copyr()
     {
-        List<KrulaVertolit> CopyrKrulavertolit = new List<KrulaVertolit>();
+        KrulaVertolit[] CopyrKrulavertolit = new KrulaVertolit();
         foreach (var krulo in krulavertolit)
         {
             CopyrKrulavertolit.Add(krulo.Copyr());
@@ -152,7 +152,7 @@ class FlyingCarpet : Device, ICloneable<FlyingCarpet>
 
 class Registry
 {
-    private List<IDevice> obladnananya = new List<IDevice>();
+    private IDevice[] obladnananya = new IDevice();
 
     public void AddObladnanya(IDevice device)
     {
@@ -201,9 +201,9 @@ class Registry
         obladnananya = obladnananya.OrderByDescending(e => e.description.Length).ToList(); 
     }
 
-    public List<T> CopyObladnanya<T>() where T : IDevice, ICopyrable<T>
+    public T[] CopyObladnanya<T>() where T : IDevice, ICopyrable<T>
     {
-        List<T> copies = new List<T>();
+        T[] copies = new T();
         foreach (var device in obladnananya.OfType<T>())
         {
             copies.Add(device.Copyr());
@@ -219,7 +219,7 @@ class Program
         Registry registry = new Registry();
 
         Airplane airplane1 = new Airplane("BF 53", "big", "Turbo", 56000);
-        Vertolit vertolit1 = new Vertolit("M 58", "medium ", "Turbo", 1922, new List<KrulaVertolit> { new KrulaVertolit("Complex"), new KrulaVertolit("Metal") });
+        Vertolit vertolit1 = new Vertolit("M 58", "medium ", "Turbo", 1922, new KrulaVertolit[] { new KrulaVertolit("Complex"), new KrulaVertolit("Metal") });
         Balloon balloon1 = new Balloon(" HG 67", "thermal ", "Nylon",1222);
         DeltaPlan deltaPlan1 = new DeltaPlan("AP 87 ", "High plan", "Complex", 1);
         FlyingCarpet flyingCarpet1 = new FlyingCarpet("Fast", "Magic ", "Wool", "Red");
@@ -251,7 +251,7 @@ class Program
         registry.DisplayAllObladnanya();
         Console.WriteLine();
 
-        List<Airplane> airplaneCopies = registry.CopyObladnanya<Airplane>();
+        Airplane[] airplaneCopies = registry.CopyObladnanya<Airplane>();
         Console.WriteLine("Number of airplane copies: " + airplaneCopies.Count);
     }
 }
