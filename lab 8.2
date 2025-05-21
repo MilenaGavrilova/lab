@@ -25,13 +25,13 @@ public class Valiza
     public string firmaVyrobnyk { get; set; }
     public double vagaValizy { get; set; }
     public double obiemyValizy { get; set; }
-    public List<Predmet> vmystValizy { get; set; }
+    public Predmet[] vmystValizy { get; set; }
 
     public event Action<Valiza, Predmet> dobavlennyaPredmeta;
 
     public Valiza()
     {
-        vmystValizy = new List<Predmet>();
+        vmystValizy = new Predmet();
         dobavlennyaPredmeta += (valiza, predmet) =>
         {
             double potochniyObiemy = valiza.vmystValizy.Sum(p => p.obiemy);
