@@ -5,7 +5,19 @@ using System.IO;
 using System.Linq;
 
 namespace Catalog
+
 {
+    public interface IContainer<TElement>
+    {
+        int Count { get; }
+        TElement this[int index] { get; set; } 
+        void Add(TElement element);
+        void Delete(TElement element);
+     public interface IFileContainer : IContainer<File>
+    {
+        void Save(string fileName);
+        void Load(string fileName);
+        bool IsDataSaved { get; }
     public class Person : IComparable<Person>, ICloneable //два інтерфейси
     {
         public string Name { get; set; }
@@ -19,16 +31,18 @@ namespace Catalog
             BirthDate = birthDate;
         }
 
-        public int Comp(Person other)
-        {
-            if (other == null) return 1; // порівняння name і datebirh
-            
-                int surnameComparison = Surname.Comp(other.Surname);
-            if (surnameComparison != 0) return surnameComparison;
-            int nameComparison = Name.Comp(other.Name);
-            if (nameComparison != 0) return nameComparison;
-            return BirthDate.Comp(other.BirthDate);
-        }
+        public int CompareTo(Person other)
+        {
+            if (other == null) return 1;
+
+            int surnameComparison = Surname.CompareTo(other.Surname);
+            if (surnameComparison != 0) return surnameComparison;
+
+            int nameComparison = Name.CompareTo(other.Name);
+            if (nameComparison != 0) return nameComparison;
+
+            return BirthDate.CompareTo(other.BirthDate);
+        }
 
         public object Clone() //метод icloneable копіює обєкт Person
         {
@@ -56,7 +70,7 @@ namespace Catalog
         public override string ToString() => $"FName: {FName}, User: {User}, Timelast: {Timelast}";
     }
 
-    public class Catalog : IContainer<File>, Filecontr // filecont розширює  icontainer
+    public class Catalog : IFileContainer, IEnumerable<File> filecont розширює  icontainer
     {
         private string name;
         private string opus; \\ опис класу
