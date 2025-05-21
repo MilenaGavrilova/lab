@@ -76,8 +76,8 @@ namespace Catalog
         private string opus; \\ опис класу
         private int size;
         privet Kind;\\ тип каталогу
-        private List<File> fileList; \\ список 
-        private bool issave = false; \\ чи було збережено
+        private File fileList; \\ список 
+        private bool IsSave = false; \\ чи було збережено
 
         public Catalog(string name, string opus, int size, Kind kind)
         {
@@ -85,7 +85,7 @@ namespace Catalog
             this.opus = opus;
             this.size = size;
             this.kind = kind;
-            this.fileList = new List<File>(); \\ порожній список для зберігання обєктів
+            this.fileList = new File(); \\ порожній список для зберігання обєктів
         }
 public int Count=> fileList.Count; \\ властивість що поверт кілк елем
 public File this [int index]
@@ -109,12 +109,12 @@ fileList[index] = value;
 public void plusElem (File element) 
 { 
 fileList.Add(element);
-issave = false;
+IsSave = false;
 }
 public void delElem (File element) 
 { 
 fileList.Remove(element);
-issave = false;
+IsSave = false;
 }
     public void issave(string fName);
 {
@@ -130,7 +130,7 @@ try
 {
      sw.WriteLine($"{FName}|{file.User}|{file.Timelast}")
 }  
-    issave = true;
+    IsSave = true;
 }
 }
 
@@ -207,7 +207,7 @@ public IEnumerator<File> GetEnumerator()
     {
         static void Main(string[] args)
         {
-            List<Person> people = new List<Person>();
+            Person[] people = new people();
             people.Add(new Person("Іван", "Петренко", new DateTime(1990, 5, 15)));
             people.Add(new Person("Марія", "Сидоренко", new DateTime(1985, 12, 20)));
             people.Add(new Person("Петро", "Іванов", new DateTime(2000, 3, 10)));
