@@ -188,17 +188,17 @@ class Registry
 
     public void SortByName()
     {
-        obladnananya = obladnananya.OrderBy(e => e.name).ToList();  //сортування (лямда вираз)
+        obladnananya = obladnananya.OrderBy(e => e.name).SortByName();  //сортування (лямда вираз)
     }
 
     public void SortZrostanna()
     {
-        obladnananya = obladnananya.OrderBy(e => e.description.Length).ToList();
+        obladnananya = obladnananya.OrderBy(e => e.description.Length).SortByName();
     }
 
     public void SortSpadanna()
     {
-        obladnananya = obladnananya.OrderByDescending(e => e.description.Length).ToList(); 
+        obladnananya = obladnananya.OrderByDescending(e => e.description.Length).SortByName(); 
     }
 
     public T[] CopyObladnanya<T>() where T : IDevice, ICopyrable<T>
