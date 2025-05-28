@@ -1,0 +1,78 @@
+using System;
+using System.Text.Json;
+using System.Xml.Serialization;
+using System.IO;
+
+[Serializable]
+public class Marshrut
+{
+    public string pochatok;
+    public string kinec;
+    public int chas;
+    public int nomer;
+}
+
+class Program
+{
+    static void Main()
+    {
+        Marshrut[] marshruty = new Marshrut[3];
+
+        Marshrut m1 = new Marshrut();
+        m1.pochatok = "Kyiv";
+        m1.kinec = "Lviv";
+        m1.chas = 6;
+        m1.nomer = 101;
+        marshruty[0] = m1;
+
+        Marshrut m2 = new Marshrut();
+        m2.pochatok = "Kyiv";
+        m2.kinec = "Odesa";
+        m2.chas = 5;
+        m2.nomer = 102;
+        marshruty[1] = m2;
+
+        Marshrut m3 = new Marshrut();
+        m3.pochatok = "Lviv";
+        m3.kinec = "Odesa";
+        m3.chas = 9;
+        m3.nomer = 103;
+        marshruty[2] = m3;
+
+        string jsonShlyakh = "marshruty.json";
+        string xmlShlyakh = "marshruty.xml";
+
+        string json = JsonSerializer.Serialize(marshruty);
+        File.WriteAllText(jsonShlyakh, json);
+
+        XmlSerializer xmlSerializer = new XmlSerializer(typeof(Marshrut[]));
+        FileStream xmlPotik = new FileStream(xmlShlyakh, FileMode.Create);
+        xmlSerializer.Serialize(xmlPotik, marshruty);
+        xmlPotik.Close();
+
+        string jsonZmist = File.ReadAllText(jsonShlyakh);
+        Marshrut[] marshrutyZJson = JsonSerializer.Deserialize<Marshrut[]>(jsonZmist);
+
+        FileStream potikXml = new FileStream(xmlShlyakh, FileMode.Open);
+        Marshrut[] marshrutyZXml = (Marshrut[])xmlSerializer.Deserialize(potikXml);
+        potikXml.Close();
+
+        Console.Write("Vvedit' punkt pryzdzhennya: ");
+        string punkt = Console.ReadLine();
+
+        Console.Write("Vvedit' maksimalnyy chas podorozhi: ");
+        int maxChas = int.Parse(Console.ReadLine());
+
+        for (int i = 0; i < marshruty.Length; i++)
+        {
+            if (marshruty[i].kinec == punkt && marshruty[i].chas <= maxChas)
+            {
+                Console.WriteLine("Pochatok: " + marshruty[i].pochatok);
+                Console.WriteLine("Kinec: " + marshruty[i].kinec);
+                Console.WriteLine("Chas: " + marshruty[i].chas);
+                Console.WriteLine("Nomer: " + marshruty[i].nomer);
+                Console.WriteLine();
+            }
+        }
+    }
+}
