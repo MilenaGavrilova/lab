@@ -1,0 +1,52 @@
+using System;
+using System.IO;
+
+class Program
+{
+    static void Main()
+    {
+        string shlyahDoFaylu = "text.txt";
+
+        Console.WriteLine($"Спроба прочитати: {Path.GetFullPath(shlyahDoFaylu)}");
+
+        try
+        {
+            string tekst = File.ReadAllText(shlyahDoFaylu);
+
+            int kilkistRechen = 0;
+            int kilkistVel = 0;
+            int kilkistMal = 0;
+            int kilkistHolosn = 0;
+            int kilkistPryholosn = 0;
+            int kilkistCyfr = 0;
+
+            string holosni = "AEIOUYАЕЄИІЇОУЮЯaeiouyаеєиіїоуюя";
+            string pryholosni = "BCDFGHJKLMNPQRSTVWXZБВГҐДЖЗЙКЛМНПРСТФХЦЧШЩbcdfghjklmnpqrstvwxzбвгґджзйклмнпрстфхцчшщ";
+
+            foreach (char symvol in tekst)
+            {
+                if (symvol == '.' || symvol == '!' || symvol == '?') kilkistRechen++;
+                if (char.IsUpper(symvol)) kilkistVel++;
+                if (char.IsLower(symvol)) kilkistMal++;
+                if (holosni.Contains(symvol)) kilkistHolosn++;
+                if (pryholosni.Contains(symvol)) kilkistPryholosn++;
+                if (char.IsDigit(symvol)) kilkistCyfr++;
+            }
+
+            Console.WriteLine("Kilkist' rechen': " + kilkistRechen);
+            Console.WriteLine("Kilkist' velykykh liter: " + kilkistVel);
+            Console.WriteLine("Kilkist' malykh liter: " + kilkistMal);
+            Console.WriteLine("Kilkist' holosnykh liter: " + kilkistHolosn);
+            Console.WriteLine("Kilkist' pryholosnykh liter: " + kilkistPryholosn);
+            Console.WriteLine("Kilkist' cyf: " + kilkistCyfr);
+        }
+        catch (FileNotFoundException)
+        {
+            Console.WriteLine($"Файл '{shlyahDoFaylu}' не знайдено у каталозі: {Path.GetFullPath(shlyahDoFaylu)}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Помилка при читанні файлу: {ex.Message}");
+        }
+    }
+}
