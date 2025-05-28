@@ -1,0 +1,203 @@
+using System;
+using System.IO;
+
+class Song
+{
+    public string nazva;
+    public string avtor;
+    public string kompozytor;
+    public int rik;
+    public string tekst;
+    public string[] vykonavtsi;
+}
+
+class Program
+{
+    static void Main()
+    {
+        Song[] kolektsiya = new Song[100];
+        int kilkist = 0;
+
+        bool pratsyuvaty = true;
+
+        while (pratsyuvaty)
+        {
+            Console.WriteLine("1 - Dodaty pisnyu");
+            Console.WriteLine("2 - Vydalyty pisnyu");
+            Console.WriteLine("3 - Redahuvaty pisnyu");
+            Console.WriteLine("4 - Shukaty pisnyu");
+            Console.WriteLine("5 - Zberihaty kolektsiyu u fayl");
+            Console.WriteLine("6 - Zavantazhyty kolektsiyu z faylu");
+            Console.WriteLine("7 - Vyvesty pisni vykonavtsya");
+            Console.WriteLine("0 - Vyhid");
+
+            string vibor = Console.ReadLine();
+
+            if (vibor == "1")
+            {
+                Song nova = new Song();
+                Console.Write("Nazva: ");
+                nova.nazva = Console.ReadLine();
+                Console.Write("Avtor: ");
+                nova.avtor = Console.ReadLine();
+                Console.Write("Kompozytor: ");
+                nova.kompozytor = Console.ReadLine();
+                Console.Write("Rik: ");
+                nova.rik = int.Parse(Console.ReadLine());
+                Console.Write("Tekst: ");
+                nova.tekst = Console.ReadLine();
+                Console.Write("Vykonavtsi (cherez komu): ");
+                nova.vykonavtsi = Console.ReadLine().Split(',');
+                kolektsiya[kilkist] = nova;
+                kilkist++;
+            }
+
+            if (vibor == "2")
+            {
+                Console.Write("Vvedit' nazvu dlya vydalennya: ");
+                string nazva = Console.ReadLine();
+                for (int i = 0; i < kilkist; i++)
+                {
+                    if (kolektsiya[i].nazva == nazva)
+                    {
+                        for (int j = i; j < kilkist - 1; j++)
+                        {
+                            kolektsiya[j] = kolektsiya[j + 1];
+                        }
+                        kilkist--;
+                        break;
+                    }
+                }
+            }
+
+            if (vibor == "3")
+            {
+                Console.Write("Vvedit' nazvu pisni dlya redahuvannya: ");
+                string nazva = Console.ReadLine();
+                for (int i = 0; i < kilkist; i++)
+                {
+                    if (kolektsiya[i].nazva == nazva)
+                    {
+                        Console.Write("Nova nazva: ");
+                        kolektsiya[i].nazva = Console.ReadLine();
+                        Console.Write("Novyy avtor: ");
+                        kolektsiya[i].avtor = Console.ReadLine();
+                        Console.Write("Novyy kompozytor: ");
+                        kolektsiya[i].kompozytor = Console.ReadLine();
+                        Console.Write("Novyy rik: ");
+                        kolektsiya[i].rik = int.Parse(Console.ReadLine());
+                        Console.Write("Novyy tekst: ");
+                        kolektsiya[i].tekst = Console.ReadLine();
+                        Console.Write("Novyy spysok vykonavtsiv (cherez komu): ");
+                        kolektsiya[i].vykonavtsi = Console.ReadLine().Split(',');
+                        break;
+                    }
+                }
+            }
+
+            if (vibor == "4")
+            {
+                Console.Write("Vvedit' slovo dlya poshuku: ");
+                string slovo = Console.ReadLine();
+                for (int i = 0; i < kilkist; i++)
+                {
+                    if (kolektsiya[i].nazva.Contains(slovo) || kolektsiya[i].avtor.Contains(slovo) || kolektsiya[i].kompozytor.Contains(slovo))
+                    {
+                        Console.WriteLine("Nazva: " + kolektsiya[i].nazva);
+                        Console.WriteLine("Avtor: " + kolektsiya[i].avtor);
+                        Console.WriteLine("Kompozytor: " + kolektsiya[i].kompozytor);
+                        Console.WriteLine("Rik: " + kolektsiya[i].rik);
+                        Console.WriteLine("Tekst: " + kolektsiya[i].tekst);
+                        Console.WriteLine();
+                    }
+                }
+            }
+
+            if (vibor == "5")
+            {
+                string shlyakh = "songs.txt";
+                Console.WriteLine($"Збереження у файл: {Path.GetFullPath(shlyakh)}");
+                string[] stroky = new string[kilkist];
+                for (int i = 0; i < kilkist; i++)
+                {
+                    string vykonavtsi = string.Join(",", kolektsiya[i].vykonavtsi);
+                    stroky[i] = kolektsiya[i].nazva + ";" + kolektsiya[i].avtor + ";" + kolektsiya[i].kompozytor + ";" + kolektsiya[i].rik + ";" + kolektsiya[i].tekst + ";" + vykonavtsi;
+                }
+                File.WriteAllLines(shlyakh, stroky);
+                Console.WriteLine("Збереження завершено.");
+            }
+
+            if (vibor == "6")
+            try
+            {
+                string shlyakh = "songs.txt";
+                Console.WriteLine($"Завантаження з файлу: {Path.GetFullPath(shlyakh)}");
+                if (File.Exists(shlyakh))
+                {
+                    string[] stroky = File.ReadAllLines(shlyakh);
+                    kilkist = 0;
+                    for (int i = 0; i < stroky.Length; i++)
+                    {
+                        string[] dani = stroky[i].Split(';');
+                        Song p = new Song();
+                        p.nazva = dani[0];
+                        p.avtor = dani[1];
+                        p.kompozytor = dani[2];
+                        p.rik = int.Parse(dani[3]);
+                        p.tekst = dani[4];
+                        p.vykonavtsi = dani[5].Split(',');
+                        kolektsiya[kilkist] = p;
+                        kilkist++;
+                    }
+                    Console.WriteLine("Zavantazhennya uspishne.");
+                }
+                else
+                {
+                    Console.WriteLine("Fayl ne isnuye.");
+                }
+            }
+            catch (UnauthorizedAccessException)
+            {
+                Console.WriteLine("Помилка: відсутній доступ до файлу або папки.");
+            }
+            catch (ArgumentException)
+            {
+                Console.WriteLine("Помилка: некоректний шлях до файлу.");
+            }
+            catch (PathTooLongException)
+            {
+                Console.WriteLine("Помилка: шлях до файлу занадто довгий.");
+            }
+            catch (IOException ex)
+            {
+                Console.WriteLine("Помилка введення/виведення: " + ex.Message);
+            }
+            catch (FormatException)
+            {
+                Console.WriteLine("Помилка формату даних у файлі.");
+            }
+
+            if (vibor == "7")
+            {
+                Console.Write("Vvedit' im'ya vykonavtsya: ");
+                string imya = Console.ReadLine();
+                for (int i = 0; i < kilkist; i++)
+                {
+                    for (int j = 0; j < kolektsiya[i].vykonavtsi.Length; j++)
+                    {
+                        if (kolektsiya[i].vykonavtsi[j].Trim() == imya)
+                        {
+                            Console.WriteLine("Nazva: " + kolektsiya[i].nazva);
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (vibor == "0")
+            {
+                pratsyuvaty = false;
+            }
+        }
+    }
+}
