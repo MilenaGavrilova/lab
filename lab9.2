@@ -1,0 +1,66 @@
+using System;
+using System.IO;
+
+class Program
+{
+    static void Main()
+    {
+        string tekstFaylShlyah = "text.txt";
+        string slovaFaylShlyah = "words.txt";
+
+        Console.WriteLine($"Спроба прочитати текстовий файл: {Path.GetFullPath(tekstFaylShlyah)}");
+        Console.WriteLine($"Спроба прочитати файл зі словами: {Path.GetFullPath(slovaFaylShlyah)}");
+
+        string tekst = "";
+        string[] slova = new string[0];
+
+        try
+        {
+            tekst = File.ReadAllText(tekstFaylShlyah);
+        }
+        catch (FileNotFoundException)
+        {
+            Console.WriteLine("Tekstovyy fayl ne znaydeno.");
+            return;
+        }
+        catch (UnauthorizedAccessException)
+        {
+            Console.WriteLine("Nema dostupu do tekstovoho faylu.");
+            return;
+        }
+        catch (Exception)
+        {
+            Console.WriteLine("Pomylka pry chytanni tekstovoho faylu.");
+            return;
+        }
+
+        try
+        {
+            slova = File.ReadAllLines(slovaFaylShlyah);
+        }
+        catch (FileNotFoundException)
+        {
+            Console.WriteLine("Fayl zi slovamy ne znaydeno.");
+            return;
+        }
+        catch (UnauthorizedAccessException)
+        {
+            Console.WriteLine("Nema dostupu do faylu zi slovamy.");
+            return;
+        }
+        catch (Exception)
+        {
+            Console.WriteLine("Pomylka pry chytanni faylu zi slovamy.");
+            return;
+        }
+
+        foreach (string slovo in slova)
+        {
+            string zirka = new string('*', slovo.Length);
+            tekst = tekst.Replace(slovo, zirka);
+        }
+
+        Console.WriteLine("Rezultat:");
+        Console.WriteLine(tekst);
+    }
+}
