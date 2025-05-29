@@ -1,5 +1,3 @@
-
-
 using System;
 
 interface IDevice
@@ -50,8 +48,6 @@ class CompareByDescriptionDesc : IComparer<Device>
         return y.description.Length.CompareTo(x.description.Length);
     }
 }
-
-// --- Похідні класи ---
 class Airplane : Device
 {
     public string engineType { get; }
@@ -117,7 +113,6 @@ class FlyingCarpet : Device
     }
 }
 
-// --- Registry без List ---
 class Registry
 {
     private Device[] obladnannya = new Device[0];
@@ -152,7 +147,6 @@ class Registry
     }
 }
 
-// --- Main ---
 class Program
 {
     static void Main()
