@@ -65,7 +65,7 @@ class Vertolit : Device, IEngine, ICopyrable<Vertolit>
     public int powersize { get; }
     public KrulaVertolit[] krulavertolit { get; }
 
-    public Vertolit(string name, string description, string engineType, int powersize, List<KrulaVertolit> krulavertolit) : base(name, description)
+    public Vertolit(string name, string description, string engineType, int powersize, krulavertolit) : base(name, description)
     {
         this.engineType = engineType;
         this.powersize = powersize;
