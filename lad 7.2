@@ -1,5 +1,6 @@
+
+
 using System;
-using System.Collections.Generic;
 
 interface IDevice
 {
@@ -7,24 +8,12 @@ interface IDevice
     string description { get; }
 }
 
-interface IEngine
-{
-    string engineType { get; }
-    int powersize { get; }
-}
-
-interface IPart
-{
-    string partName { get; }
-    string material { get; }
-}
-
 interface ICopyrable<T>
 {
     T Copyr();
 }
 
-class Device : IDevice, ICopyrable<Device>
+class Device : IDevice, ICopyrable<Device>, IComparable<Device>
 {
     public string name { get; }
     public string description { get; }
@@ -35,222 +24,160 @@ class Device : IDevice, ICopyrable<Device>
         this.description = description;
     }
 
+    public int CompareTo(Device other)
+    {
+        return this.name.CompareTo(other.name);
+    }
+
     public Device Copyr()
     {
         return new Device(name, description);
     }
 }
 
-class Airplane : Device, IEngine, ICopyrable<Airplane>
+class CompareByDescriptionAsc : IComparer<Device>
+{
+    public int Compare(Device x, Device y)
+    {
+        return x.description.Length.CompareTo(y.description.Length);
+    }
+}
+
+class CompareByDescriptionDesc : IComparer<Device>
+{
+    public int Compare(Device x, Device y)
+    {
+        return y.description.Length.CompareTo(x.description.Length);
+    }
+}
+
+// --- Похідні класи ---
+class Airplane : Device
 {
     public string engineType { get; }
     public int powersize { get; }
 
-    public Airplane(string name, string description, string engineType, int powersize) : base(name, description)
+    public Airplane(string name, string description, string engineType, int powersize)
+        : base(name, description)
     {
         this.engineType = engineType;
         this.powersize = powersize;
     }
-
-    public Airplane Copyr()
-    {
-        return new Airplane(name, description, engineType, powersize);
-    }
 }
 
-class Vertolit : Device, IEngine, ICopyrable<Vertolit>
+class Vertolit : Device
 {
     public string engineType { get; }
     public int powersize { get; }
-    public KrulaVertolit[] krulavertolit { get; }
 
-    public Vertolit(string name, string description, string engineType, int powersize, krulavertolit) : base(name, description)
+    public Vertolit(string name, string description, string engineType, int powersize)
+        : base(name, description)
     {
         this.engineType = engineType;
         this.powersize = powersize;
-        this.krulavertolit = krulavertolit;
-    }
-
-    public Vertolit Copyr()
-    {
-        KrulaVertolit[] CopyrKrulavertolit = new KrulaVertolit();
-        foreach (var krulo in krulavertolit)
-        {
-            CopyrKrulavertolit.Add(krulo.Copyr());
-        }
-        return new Vertolit(name, description, engineType, powersize, CopyrKrulavertolit);
     }
 }
 
-class KrulaVertolit : IPart, ICopyrable<KrulaVertolit>
-{
-    public string partName => "KruloVertolit";
-    public string material { get; }
-
-    public KrulaVertolit(string material)
-    {
-        this.material = material;
-    }
-
-    public KrulaVertolit Copyr()
-    {
-        return new KrulaVertolit(material);
-    }
-}
-
-class Balloon : Device, ICopyrable<Balloon>
+class Balloon : Device
 {
     public string materialKonverta { get; }
     public int volume { get; }
 
-    public Balloon(string name, string description, string materialKonverta, int volume) : base(name, description)
+    public Balloon(string name, string description, string materialKonverta, int volume)
+        : base(name, description)
     {
         this.materialKonverta = materialKonverta;
         this.volume = volume;
     }
-
-    public Balloon Copyr()
-    {
-        return new Balloon(name, description, materialKonverta, volume);
-    }
 }
 
-class DeltaPlan : Device, ICopyrable<DeltaPlan>
+class DeltaPlan : Device
 {
     public string materialKrula { get; }
     public double rosmahKrula { get; }
 
-    public DeltaPlan(string name, string description, string materialKrula, double rosmahKrula) : base(name, description)
+    public DeltaPlan(string name, string description, string materialKrula, double rosmahKrula)
+        : base(name, description)
     {
         this.materialKrula = materialKrula;
         this.rosmahKrula = rosmahKrula;
     }
-
-    public DeltaPlan Copyr()
-    {
-        return new DeltaPlan(name, description, materialKrula, rosmahKrula);
-    }
 }
 
-class FlyingCarpet : Device, ICloneable<FlyingCarpet>
+class FlyingCarpet : Device
 {
     public string materialP { get; }
     public string color { get; }
 
-    public FlyingCarpet(string name, string description, string materialP, string color) : base(name, description)
+    public FlyingCarpet(string name, string description, string materialP, string color)
+        : base(name, description)
     {
         this.materialP = materialP;
         this.color = color;
     }
-
-    public FlyingCarpet Copyr()
-    {
-        return new FlyingCarpet(name, description, materialP, color);
-    }
 }
 
+// --- Registry без List ---
 class Registry
 {
-    private IDevice[] obladnananya = new IDevice();
+    private Device[] obladnannya = new Device[0];
 
-    public void AddObladnanya(IDevice device)
+    public void AddObladnanya(Device device)
     {
-        obladnananya.Add(device);
+        Array.Resize(ref obladnannya, obladnannya.Length + 1);
+        obladnannya[obladnannya.Length - 1] = device;
     }
 
     public void DisplayAllObladnanya()
     {
-        foreach (var device in obladnananya)
+        foreach (var device in obladnannya)
         {
-            Console.WriteLine(device.name + " - " + device.description);
-        }
-    }
-
-    public void DisplayObladnanyaWithEngines()
-    {
-        foreach (var device in obladnananya.OfType<IEngine>())
-        {
-            Console.WriteLine(device.name + " (Engine: " + device.engineType + ")");
-        }
-    }
-
-    public void DisplayObladnanyaWithoutEngines()
-    {
-        foreach (var device in obladnananya)
-        {
-            if (!(device is IEngine))
-            {
-                Console.WriteLine(device.name);
-            }
+            Console.WriteLine($"{device.name} - {device.description}");
         }
     }
 
     public void SortByName()
     {
-        obladnananya = obladnananya.OrderBy(e => e.name).SortByName();  //сортування (лямда вираз)
+        Array.Sort(obladnannya); // IComparable
     }
 
-    public void SortZrostanna()
+    public void SortByDescriptionAsc()
     {
-        obladnananya = obladnananya.OrderBy(e => e.description.Length).SortByName();
+        Array.Sort(obladnannya, new CompareByDescriptionAsc());
     }
 
-    public void SortSpadanna()
+    public void SortByDescriptionDesc()
     {
-        obladnananya = obladnananya.OrderByDescending(e => e.description.Length).SortByName(); 
-    }
-
-    public T[] CopyObladnanya<T>() where T : IDevice, ICopyrable<T>
-    {
-        T[] copies = new T();
-        foreach (var device in obladnananya.OfType<T>())
-        {
-            copies.Add(device.Copyr());
-        }
-        return copies;
+        Array.Sort(obladnannya, new CompareByDescriptionDesc());
     }
 }
 
+// --- Main ---
 class Program
 {
-    static void Main(string[] args)
+    static void Main()
     {
         Registry registry = new Registry();
 
-        Airplane airplane1 = new Airplane("BF 53", "big", "Turbo", 56000);
-        Vertolit vertolit1 = new Vertolit("M 58", "medium ", "Turbo", 1922, new KrulaVertolit[] { new KrulaVertolit("Complex"), new KrulaVertolit("Metal") });
-        Balloon balloon1 = new Balloon(" HG 67", "thermal ", "Nylon",1222);
-        DeltaPlan deltaPlan1 = new DeltaPlan("AP 87 ", "High plan", "Complex", 1);
-        FlyingCarpet flyingCarpet1 = new FlyingCarpet("Fast", "Magic ", "Wool", "Red");
+        registry.AddObladnanya(new Airplane("BF 53", "big", "Turbo", 56000));
+        registry.AddObladnanya(new Vertolit("M 58", "medium", "Turbo", 1922));
+        registry.AddObladnanya(new Balloon("HG 67", "thermal", "Nylon", 1222));
+        registry.AddObladnanya(new DeltaPlan("AP 87", "High plan", "Complex", 1));
+        registry.AddObladnanya(new FlyingCarpet("Fast", "Magic", "Wool", "Red"));
 
-        registry.AddObladnanya(airplane1);
-        registry.AddObladnanya(vertolit1);
-        registry.AddObladnanya(balloon1);
-        registry.AddObladnanya(deltaPlan1);
-        registry.AddObladnanya(flyingCarpet1);
-
+        Console.WriteLine("До сортування:");
         registry.DisplayAllObladnanya();
-        Console.WriteLine();
 
-        registry.DisplayObladnanyaWithEngines();
-        Console.WriteLine();
-
-        registry.DisplayObladnanyaWithoutEngines();
-        Console.WriteLine();
-
+        Console.WriteLine("\nСортування за назвою:");
         registry.SortByName();
         registry.DisplayAllObladnanya();
-        Console.WriteLine();
 
-        registry.SortZrostanna();
+        Console.WriteLine("\nСортування за довжиною опису (зростання):");
+        registry.SortByDescriptionAsc();
         registry.DisplayAllObladnanya();
-        Console.WriteLine();
 
-        registry.SortSpadanna();
+        Console.WriteLine("\nСортування за довжиною опису (спадання):");
+        registry.SortByDescriptionDesc();
         registry.DisplayAllObladnanya();
-        Console.WriteLine();
-
-        Airplane[] airplaneCopies = registry.CopyObladnanya<Airplane>();
-        Console.WriteLine("Number of airplane copies: " + airplaneCopies.Count);
     }
 }
